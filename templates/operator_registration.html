@@ -1,0 +1,178 @@
+{% extends 'commen.html' %}
+{% load static %}
+
+{% block title %}Grid Operator Registration - Smart Grid AI{% endblock %}
+
+{% block extra_css %}
+<style>
+  .reg-wrapper {
+    padding: 50px 15px;
+    background: radial-gradient(circle at 50% 20%, rgba(2, 132, 199, 0.08) 0%, rgba(248, 250, 252, 0) 70%);
+  }
+
+  .reg-card {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid var(--sg-border);
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  .reg-header {
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    color: #ffffff;
+    padding: 35px 30px 25px;
+    text-align: center;
+    position: relative;
+  }
+
+  .reg-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 14px;
+    background: #ffffff;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .reg-icon-badge {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #ffffff;
+    margin: 0 auto 16px;
+  }
+
+  .reg-body {
+    padding: 35px 40px;
+  }
+
+  .form-control, .form-select {
+    border-radius: 10px;
+    padding: 10px 14px;
+    border: 1px solid #cbd5e1;
+    font-size: 0.95rem;
+  }
+
+  .form-control:focus, .form-select:focus {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+  }
+
+  .section-label {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #0284c7;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-label::after {
+    content: '';
+    flex-grow: 1;
+    height: 1px;
+    background: #e2e8f0;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="reg-wrapper">
+  <div class="reg-card" data-aos="fade-up">
+    <div class="reg-header">
+      <div class="reg-icon-badge">
+        <i class="bi bi-person-badge-fill"></i>
+      </div>
+      <h2 class="fw-bold mb-1">Grid Operator Enrolment</h2>
+      <p class="small text-white-50 mb-0">Register for Central SCADA Control Room & Anomaly Monitoring Access</p>
+    </div>
+
+    <div class="reg-body">
+      <form method="POST" action="/operator_registration" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Basic Personnel Info -->
+        <div class="section-label">
+          <i class="bi bi-person-lines-fill"></i> Personnel Details
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold text-secondary">Full Name *</label>
+            <input type="text" name="name" class="form-control" placeholder="e.g. Robert Vance" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold text-secondary">Employee ID / Badge No *</label>
+            <input type="text" name="employee_id" class="form-control" placeholder="e.g. OP-2026-4401" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold text-secondary">Official Email Address *</label>
+            <input type="email" name="email" class="form-control" placeholder="robert.v@smartgrid.org" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold text-secondary">Contact Phone *</label>
+            <input type="tel" name="phone" class="form-control" placeholder="e.g. +1 (555) 019-2834" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label small fw-semibold text-secondary">Station / Control Room Address *</label>
+            <textarea name="address" rows="2" class="form-control" placeholder="Substation Dispatch Tower, Section 4" required></textarea>
+          </div>
+        </div>
+
+        <!-- Account Credentials -->
+        <div class="section-label">
+          <i class="bi bi-shield-lock"></i> Authentication & Security
+        </div>
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold text-secondary">Portal Username *</label>
+            <input type="text" name="username" class="form-control" placeholder="operator_rob" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold text-secondary">Account Password *</label>
+            <input type="password" name="password" class="form-control" placeholder="Min. 8 characters" required>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold text-secondary">Confirm Password *</label>
+            <input type="password" name="confirm_password" class="form-control" placeholder="Re-enter password" required>
+          </div>
+        </div>
+
+        <!-- Profile Photo -->
+        <div class="section-label">
+          <i class="bi bi-camera"></i> Identification Document
+        </div>
+        <div class="mb-4">
+          <label class="form-label small fw-semibold text-secondary">Official ID Badge Photo (Optional)</label>
+          <input type="file" name="profile_image" class="form-control" accept="image/*">
+          <div class="form-text small">Accepted formats: JPG, PNG, WEBP. Max file size: 5MB.</div>
+        </div>
+
+        <div class="d-grid mt-4">
+          <button type="submit" class="btn btn-gradient-primary py-2 fs-6 fw-bold shadow">
+            <i class="bi bi-check2-circle me-2"></i> Complete Operator Registration
+          </button>
+        </div>
+
+        <div class="text-center mt-3 small text-muted">
+          Already registered? <a href="/login" class="text-primary fw-semibold">Sign in here</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
