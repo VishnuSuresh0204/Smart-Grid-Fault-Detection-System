@@ -1,0 +1,262 @@
+{% extends 'TECHNICIAN/commen.html' %}
+{% load static %}
+
+{% block title %}Technician Hub & Work Orders - Smart Grid AI{% endblock %}
+
+{% block content %}
+<!-- Welcome Banner -->
+<div class="row g-4 mb-4">
+  <div class="col-12" data-aos="fade-down">
+    <div class="p-4 rounded-4 text-white shadow-sm" style="background: linear-gradient(135deg, #022c22 0%, #047857 100%); border: 1px solid rgba(255, 255, 255, 0.1);">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div class="d-flex align-items-center gap-3">
+          {% if technician.profile_image %}
+            <img src="{{ technician.profile_image.url }}" alt="{{ technician.name }}" class="rounded-circle border border-2 border-white shadow" style="width: 64px; height: 64px; object-fit: cover;">
+          {% else %}
+            <div class="rounded-circle bg-white text-success d-flex align-items-center justify-content-center fw-bold shadow" style="width: 64px; height: 64px; font-size: 1.6rem;">
+              {{ technician.name|slice:":1"|upper }}
+            </div>
+          {% endif %}
+          <div>
+            <div class="d-flex align-items-center gap-2 mb-1">
+              <span class="badge bg-light text-success fw-bold"><i class="bi bi-tools me-1"></i> FIELD RESPONSE READY</span>
+              <span class="badge bg-dark font-monospace">{{ technician.employee_id }}</span>
+            </div>
+            <h2 class="fw-bold mb-0">Welcome, {{ technician.name }}</h2>
+            <div class="small text-white-50 mt-1">
+              <i class="bi bi-mortarboard me-1"></i> {{ technician.qualification|default:"Field Engineer" }} &bull;
+              <i class="bi bi-patch-check me-1"></i> {{ technician.specialization|default:"Substation Maintenance" }} &bull;
+              <strong>{{ technician.experience_years }} Years Experience</strong>
+            </div>
+          </div>
+        </div>
+        <div>
+          <a href="/technician_profile" class="btn btn-outline-light btn-sm px-3">
+            <i class="bi bi-person-gear me-1"></i> Edit Profile
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Field Metrics KPI Cards -->
+<div class="row g-4 mb-4">
+  <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="100">
+    <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-secondary small fw-semibold text-uppercase">Assigned Work Orders</span>
+        <span class="badge bg-primary bg-opacity-10 text-primary">3 ACTIVE</span>
+      </div>
+      <div class="fs-2 fw-bold text-dark">03</div>
+      <div class="progress mt-2" style="height: 5px;">
+        <div class="progress-bar bg-primary" style="width: 60%"></div>
+      </div>
+      <div class="d-flex justify-content-between text-muted small mt-2">
+        <span>1 High Priority</span>
+        <span>2 Routine Service</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="200">
+    <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-secondary small fw-semibold text-uppercase">Substations Serviced</span>
+        <span class="badge bg-success bg-opacity-10 text-success">THIS MONTH</span>
+      </div>
+      <div class="fs-2 fw-bold text-dark">18</div>
+      <div class="progress mt-2" style="height: 5px;">
+        <div class="progress-bar bg-success" style="width: 90%"></div>
+      </div>
+      <div class="d-flex justify-content-between text-muted small mt-2">
+        <span>Zero Recurrent Faults</span>
+        <span class="text-success"><i class="bi bi-check-circle"></i> 100% Passed</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="300">
+    <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-secondary small fw-semibold text-uppercase">Safety Protocol Index</span>
+        <span class="badge bg-warning bg-opacity-10 text-warning">NFPA 70E</span>
+      </div>
+      <div class="fs-2 fw-bold text-dark">100 <small class="fs-6 text-muted">%</small></div>
+      <div class="progress mt-2" style="height: 5px;">
+        <div class="progress-bar bg-warning" style="width: 100%"></div>
+      </div>
+      <div class="d-flex justify-content-between text-muted small mt-2">
+        <span>PPE Checklist Verified</span>
+        <span class="text-success">Zero Incidents</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="400">
+    <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <span class="text-secondary small fw-semibold text-uppercase">Diagnostic Equipment</span>
+        <span class="badge bg-info bg-opacity-10 text-info">CALIBRATED</span>
+      </div>
+      <div class="fs-2 fw-bold text-dark">Ready</div>
+      <div class="progress mt-2" style="height: 5px;">
+        <div class="progress-bar bg-info" style="width: 100%"></div>
+      </div>
+      <div class="d-flex justify-content-between text-muted small mt-2">
+        <span>FLIR Thermal &bull; Megger</span>
+        <span class="text-info">Ready for Field</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Work Orders & Field Inspection Schedule -->
+<div class="row g-4">
+  <div class="col-lg-8" data-aos="fade-right">
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h5 class="fw-bold text-dark mb-1">Assigned Field Work Orders</h5>
+          <small class="text-muted">Substation repairs, transformer diagnostics, and transmission line patrols</small>
+        </div>
+        <button class="btn btn-sm btn-outline-success" onclick="alert('Inspection log synchronized with dispatch.')">
+          <i class="bi bi-cloud-arrow-up me-1"></i> Sync Logs
+        </button>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table align-middle table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>Work Order / Target</th>
+              <th>Task Description</th>
+              <th>Substation</th>
+              <th>Priority</th>
+              <th class="text-end">Field Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="fw-bold text-dark">WO-2026-081</div>
+                <small class="text-muted">Type: Infrared Thermography</small>
+              </td>
+              <td>
+                <div class="small fw-semibold">Transformer Bushing Thermal Scan</div>
+                <small class="text-muted">Check hot spot anomalies on 400kV Step-down unit</small>
+              </td>
+              <td><span class="badge bg-secondary">Substation Alpha</span></td>
+              <td><span class="badge bg-danger">HIGH PRIORITY</span></td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-success py-1" onclick="alert('Work Order WO-2026-081 marked in progress.')">
+                  <i class="bi bi-play-circle me-1"></i> Start Task
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="fw-bold text-dark">WO-2026-084</div>
+                <small class="text-muted">Type: Contact Resistance</small>
+              </td>
+              <td>
+                <div class="small fw-semibold">SF6 Circuit Breaker Interrupter Test</div>
+                <small class="text-muted">Verify micro-ohm contact resistance on Feeder 220-C</small>
+              </td>
+              <td><span class="badge bg-secondary">Substation Delta</span></td>
+              <td><span class="badge bg-warning text-dark">MEDIUM</span></td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-success py-1" onclick="alert('Work Order WO-2026-084 selected.')">
+                  <i class="bi bi-check2-square me-1"></i> Inspect
+                </button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div class="fw-bold text-dark">WO-2026-090</div>
+                <small class="text-muted">Type: Insulation Resistance</small>
+              </td>
+              <td>
+                <div class="small fw-semibold">Underground Cable 10kV Megger Test</div>
+                <small class="text-muted">Routine dielectric test on 3-phase cross-linked cable</small>
+              </td>
+              <td><span class="badge bg-secondary">Metro Station S-12</span></td>
+              <td><span class="badge bg-info text-dark">SCHEDULED</span></td>
+              <td class="text-end">
+                <button class="btn btn-sm btn-outline-secondary py-1" onclick="alert('Details for WO-2026-090 loaded.')">
+                  <i class="bi bi-info-circle me-1"></i> View
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="p-3 rounded-3 bg-light border mt-3">
+        <div class="d-flex justify-content-between align-items-center">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-shield-exclamation text-warning fs-5"></i>
+            <span class="small fw-semibold text-dark">Standard Safety Rule: Confirm de-energization and ground clamp before touching high-voltage terminals.</span>
+          </div>
+          <span class="badge bg-dark">Safety Level 4</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Technician Profile Card & Info -->
+  <div class="col-lg-4" data-aos="fade-left">
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+      <h5 class="fw-bold text-dark mb-3">Field Technician Credentials</h5>
+      <div class="text-center py-2">
+        {% if technician.profile_image %}
+          <img src="{{ technician.profile_image.url }}" alt="{{ technician.name }}" class="rounded-circle border p-1 shadow-sm mb-3" style="width: 80px; height: 80px; object-fit: cover;">
+        {% else %}
+          <div class="rounded-circle bg-success bg-opacity-10 text-success d-inline-flex align-items-center justify-content-center fw-bold fs-2 mb-3" style="width: 80px; height: 80px;">
+            {{ technician.name|slice:":1"|upper }}
+          </div>
+        {% endif %}
+        <h6 class="fw-bold mb-0 text-dark">{{ technician.name }}</h6>
+        <span class="badge bg-success px-3 py-1 mt-1">Maintenance Technician</span>
+      </div>
+
+      <div class="border-top pt-3 mt-2 small">
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Employee ID:</span>
+          <span class="font-monospace fw-semibold">{{ technician.employee_id }}</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Username:</span>
+          <span class="fw-semibold">{{ technician.user.username }}</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Qualification:</span>
+          <span class="fw-semibold">{{ technician.qualification|default:"Certified Tech" }}</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Specialization:</span>
+          <span class="fw-semibold text-success">{{ technician.specialization|default:"High Voltage" }}</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Experience:</span>
+          <span class="badge bg-primary bg-opacity-10 text-primary">{{ technician.experience_years }} Years</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Phone:</span>
+          <span class="fw-semibold">{{ technician.phone }}</span>
+        </div>
+        <div class="d-flex justify-content-between">
+          <span class="text-muted">Enrolled:</span>
+          <span>{{ technician.created_at|date:"M d, Y" }}</span>
+        </div>
+      </div>
+
+      <div class="d-grid mt-4">
+        <a href="/technician_profile" class="btn btn-outline-success btn-sm">
+          <i class="bi bi-pencil-square me-1"></i> Update Qualifications & Contact
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
