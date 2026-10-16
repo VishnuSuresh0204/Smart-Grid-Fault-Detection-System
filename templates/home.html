@@ -1,0 +1,605 @@
+{% extends 'commen.html' %}
+{% load static %}
+
+{% block title %}Smart Grid Fault Detection & Localization System{% endblock %}
+
+{% block extra_css %}
+<style>
+  .hero-section {
+    position: relative;
+    background: linear-gradient(135deg, rgba(2, 6, 23, 0.94) 0%, rgba(15, 23, 42, 0.9) 100%),
+                url("{% static 'assets/img/hero-carousel/hero-carousel-1.jpg' %}") center/cover no-repeat;
+    color: #ffffff;
+    padding: 100px 0 80px;
+    overflow: hidden;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(2, 132, 199, 0.18);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    padding: 6px 16px;
+    border-radius: 30px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #38bdf8;
+    margin-bottom: 24px;
+    backdrop-filter: blur(8px);
+  }
+
+  .hero-title {
+    font-size: 3.2rem;
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    margin-bottom: 20px;
+  }
+
+  .hero-title span {
+    background: linear-gradient(135deg, #38bdf8 0%, #34d399 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .hero-lead {
+    font-size: 1.15rem;
+    color: #cbd5e1;
+    max-width: 650px;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+
+  .kpi-card {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 14px;
+    padding: 22px 18px;
+    text-align: center;
+    transition: transform 0.25s ease, background 0.25s ease;
+  }
+
+  .kpi-card:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.1);
+    border-color: rgba(56, 189, 248, 0.4);
+  }
+
+  .kpi-val {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #ffffff;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .kpi-lbl {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 600;
+    margin: 0;
+  }
+
+  .telemetry-ticker {
+    background: #090e17;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 12px 0;
+    font-size: 0.86rem;
+    color: #94a3b8;
+  }
+
+  .ticker-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 6px;
+    margin-right: 18px;
+  }
+
+  .feature-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 32px 26px;
+    border: 1px solid var(--sg-border);
+    transition: all 0.3s ease;
+    height: 100%;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 32px rgba(2, 132, 199, 0.08);
+    border-color: #7dd3fc;
+  }
+
+  .feature-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+    margin-bottom: 20px;
+  }
+
+  .portal-card {
+    background: #ffffff;
+    border-radius: 16px;
+    border: 1px solid var(--sg-border);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .portal-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 36px rgba(15, 23, 42, 0.08);
+    border-color: #0284c7;
+  }
+
+  .portal-header {
+    padding: 24px;
+    color: #ffffff;
+  }
+
+  .portal-body {
+    padding: 24px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .grid-simulator-box {
+    background: #0f172a;
+    border-radius: 16px;
+    padding: 32px;
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+  }
+
+  .sim-metric {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 16px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero-section">
+  <div class="container position-relative">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-7" data-aos="fade-right">
+        <div class="hero-badge">
+          <i class="bi bi-shield-check"></i> SCADA & PMU Automated Anomaly Protection
+        </div>
+        <h1 class="hero-title">
+          Next-Gen AI <span>Smart Grid Fault Detection</span> & Localization
+        </h1>
+        <p class="hero-lead">
+          Continuous telemetry stream ingestion, millisecond fault recognition, automated line-to-ground isolation, and coordinated technician dispatch across transmission & distribution networks.
+        </p>
+
+        <div class="d-flex flex-wrap gap-3 mb-4">
+          <a href="/login" class="btn btn-gradient-primary btn-lg px-4 shadow">
+            <i class="bi bi-box-arrow-in-right me-2"></i> Access Portal
+          </a>
+          <a href="/operator_registration" class="btn btn-outline-light btn-lg px-4">
+            <i class="bi bi-person-badge me-2"></i> Operator Register
+          </a>
+          <a href="/technician_registration" class="btn btn-outline-info btn-lg px-4">
+            <i class="bi bi-tools me-2"></i> Technician Register
+          </a>
+        </div>
+      </div>
+
+      <div class="col-lg-5" data-aos="fade-left">
+        <div class="row g-3">
+          <div class="col-6">
+            <div class="kpi-card">
+              <div class="kpi-val text-info">99.98%</div>
+              <p class="kpi-lbl">Grid Reliability</p>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="kpi-card">
+              <div class="kpi-val text-success">&lt; 35ms</div>
+              <p class="kpi-lbl">Fault Trip Speed</p>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="kpi-card">
+              <div class="kpi-val text-warning">480+</div>
+              <p class="kpi-lbl">Lines Monitored</p>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="kpi-card">
+              <div class="kpi-val text-primary">0.00%</div>
+              <p class="kpi-lbl">System Blind Spots</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 p-3 rounded-3 bg-dark border border-secondary text-white small">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <span><i class="bi bi-broadcast text-success me-2"></i> Live Grid Health Status</span>
+            <span class="badge bg-success">OPTIMAL</span>
+          </div>
+          <div class="progress" style="height: 6px;">
+            <div class="progress-bar bg-success" style="width: 98%"></div>
+          </div>
+          <div class="d-flex justify-content-between text-muted mt-2" style="font-size: 0.75rem;">
+            <span>Frequency: 50.01 Hz</span>
+            <span>Load: 84.2%</span>
+            <span>Sensors: 100% Online</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Telemetry Ticker -->
+<div class="telemetry-ticker">
+  <div class="container d-flex flex-wrap align-items-center justify-content-between">
+    <div class="d-flex flex-wrap align-items-center">
+      <span class="fw-bold text-white me-3"><i class="bi bi-activity text-info me-1"></i> TELEMETRY FEED:</span>
+      <div class="ticker-pill">
+        <span class="text-white fw-semibold">Substation Alpha (400kV)</span>
+        <span class="badge bg-success">STABLE</span>
+      </div>
+      <div class="ticker-pill">
+        <span class="text-white fw-semibold">Feeder Line 12</span>
+        <span class="text-info">Voltage: 228.4 kV</span>
+      </div>
+      <div class="ticker-pill d-none d-md-inline-flex">
+        <span class="text-white fw-semibold">Delta Transformer #3</span>
+        <span class="text-warning">Temp: 52°C</span>
+      </div>
+      <div class="ticker-pill d-none d-lg-inline-flex">
+        <span class="text-white fw-semibold">AI Neural Detector</span>
+        <span class="text-success">Active 0 Faults</span>
+      </div>
+    </div>
+    <div class="d-none d-xl-block">
+      <span class="small text-muted">Sampling: 1000 samples/sec | Protocol: IEEE C37.118</span>
+    </div>
+  </div>
+</div>
+
+<!-- Grid Overview & Core Capabilities -->
+<section id="features" class="py-5">
+  <div class="container py-4">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-semibold">Comprehensive Architecture</span>
+      <h2 class="display-6 fw-bold mt-2 text-dark">Intelligent Fault Protection Framework</h2>
+      <p class="text-muted mx-auto" style="max-width: 650px;">
+        High-speed data acquisition combined with machine learning models to detect, classify, and isolate grid faults before cascade blackouts happen.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="feature-card">
+          <div class="feature-icon bg-primary bg-opacity-10 text-primary">
+            <i class="bi bi-lightning-charge"></i>
+          </div>
+          <h4 class="fw-bold text-dark">Transient Fault Classification</h4>
+          <p class="text-muted">
+            Instantaneous discrimination between Line-to-Ground (L-G), Line-to-Line (L-L), and Double Line-to-Ground (L-L-G) faults using high-frequency waveform analysis.
+          </p>
+          <ul class="list-unstyled small text-secondary mt-3">
+            <li class="mb-1"><i class="bi bi-check-circle-fill text-success me-2"></i> Asymmetrical fault detection</li>
+            <li class="mb-1"><i class="bi bi-check-circle-fill text-success me-2"></i> Symmetrical 3-phase short circuits</li>
+            <li><i class="bi bi-check-circle-fill text-success me-2"></i> Wavelet transform filtering</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="feature-card">
+          <div class="feature-icon bg-success bg-opacity-10 text-success">
+            <i class="bi bi-geo-alt"></i>
+          </div>
+          <h4 class="fw-bold text-dark">Substation Distance Localization</h4>
+          <p class="text-muted">
+            Pinpoints fault location down to within ±100 meters of overhead transmission lines, drastically cutting field maintenance downtime and patrol costs.
+          </p>
+          <ul class="list-unstyled small text-secondary mt-3">
+            <li class="mb-1"><i class="bi bi-check-circle-fill text-success me-2"></i> Traveling wave impedance calculation</li>
+            <li class="mb-1"><i class="bi bi-check-circle-fill text-success me-2"></i> Precise tower coordinates logging</li>
+            <li><i class="bi bi-check-circle-fill text-success me-2"></i> GPS synchronized timestamping</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+        <div class="feature-card">
+          <div class="feature-icon bg-warning bg-opacity-10 text-warning">
+            <i class="bi bi-shield-exclamation"></i>
+          </div>
+          <h4 class="fw-bold text-dark">Thermal Overload & Arc Flash</h4>
+          <p class="text-muted">
+            Predicts insulation degradation, conductor thermal sag, and transformer winding hot spots before critical equipment failures or fires occur.
+          </p>
+          <ul class="list-unstyled small text-secondary mt-3">
+            <li class="mb-1"><i class="bi bi-check-circle-fill text-success me-2"></i> Transformer oil temperature telemetry</li>
+            <li class="mb-1"><i class="bi bi-check-circle-fill text-success me-2"></i> Harmonic distortion measurement</li>
+            <li><i class="bi bi-check-circle-fill text-success me-2"></i> Dynamic thermal line rating (DTLR)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Interactive SCADA Telemetry Preview -->
+<section id="detection" class="py-5 bg-light">
+  <div class="container py-4">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6" data-aos="fade-right">
+        <span class="badge bg-info bg-opacity-10 text-info px-3 py-2 rounded-pill fw-semibold">Live SCADA Emulation</span>
+        <h2 class="display-6 fw-bold mt-2 text-dark">Intelligent Grid Telemetry In Action</h2>
+        <p class="text-muted">
+          Our distributed monitoring network correlates telemetry from smart relays, Phasor Measurement Units (PMU), and current transformers (CT) across the power grid.
+        </p>
+        <div class="d-flex align-items-start gap-3 mb-3">
+          <div class="p-2 rounded bg-primary text-white"><i class="bi bi-cpu-fill fs-5"></i></div>
+          <div>
+            <h6 class="fw-bold mb-1">Deep Neural Network Classifier</h6>
+            <p class="small text-muted mb-0">Trained on over 50,000 grid anomaly cycles to distinguish between harmless load switching and severe fault transients.</p>
+          </div>
+        </div>
+        <div class="d-flex align-items-start gap-3 mb-3">
+          <div class="p-2 rounded bg-success text-white"><i class="bi bi-send-check-fill fs-5"></i></div>
+          <div>
+            <h6 class="fw-bold mb-1">Automated Technician Dispatch</h6>
+            <p class="small text-muted mb-0">Instantly routes fault coordinates, affected phase, and required replacement hardware directly to on-call maintenance engineers.</p>
+          </div>
+        </div>
+        <div class="d-flex align-items-start gap-3">
+          <div class="p-2 rounded bg-warning text-white"><i class="bi bi-lock-fill fs-5"></i></div>
+          <div>
+            <h6 class="fw-bold mb-1">Secure Multi-Tiered Access</h6>
+            <p class="small text-muted mb-0">Role-segregated environments for System Administrators, Grid Operators, and Field Technicians with audit compliance.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6" data-aos="fade-left">
+        <div class="grid-simulator-box">
+          <div class="d-flex justify-content-between align-items-center pb-3 border-bottom border-secondary mb-4">
+            <div>
+              <h5 class="fw-bold mb-0 text-white"><i class="bi bi-display me-2 text-info"></i> Grid Telemetry Monitor</h5>
+              <small class="text-secondary">Substation S-104 &bull; 400 kV Feeder</small>
+            </div>
+            <span class="live-pulse-badge">
+              <span class="pulse-dot"></span> LIVE ONLINE
+            </span>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-6">
+              <div class="sim-metric">
+                <div class="small text-secondary mb-1">Bus Voltage</div>
+                <div class="fs-4 fw-bold text-info">398.7 <small class="fs-6">kV</small></div>
+                <div class="small text-success mt-1"><i class="bi bi-arrow-up-short"></i> Within ±2% Nom</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="sim-metric">
+                <div class="small text-secondary mb-1">Grid Frequency</div>
+                <div class="fs-4 fw-bold text-success">50.02 <small class="fs-6">Hz</small></div>
+                <div class="small text-success mt-1"><i class="bi bi-check-circle"></i> Synced to Grid</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="sim-metric">
+                <div class="small text-secondary mb-1">Feeder Current</div>
+                <div class="fs-4 fw-bold text-white">1,245 <small class="fs-6">A</small></div>
+                <div class="small text-secondary mt-1">Balanced 3-Phase</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="sim-metric">
+                <div class="small text-secondary mb-1">Power Factor (cos φ)</div>
+                <div class="fs-4 fw-bold text-warning">0.96 <small class="fs-6">Lag</small></div>
+                <div class="small text-info mt-1">Capacitor Bank Active</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3 rounded bg-dark border border-secondary">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="small text-secondary">AI Anomaly Risk Index</span>
+              <span class="small text-success fw-bold">LOW RISK (1.2%)</span>
+            </div>
+            <div class="progress" style="height: 8px;">
+              <div class="progress-bar bg-success" style="width: 12%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Role Portals / Entity Access -->
+<section id="substations" class="py-5">
+  <div class="container py-4">
+    <div class="text-center mb-5" data-aos="fade-up">
+      <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-semibold">Role-Based Ecosystem</span>
+      <h2 class="display-6 fw-bold mt-2 text-dark">Specialized Portals for Every Grid Entity</h2>
+      <p class="text-muted mx-auto" style="max-width: 650px;">
+        Engineered specifically for Grid Operators, Maintenance Technicians, and Central Administrators to streamline operations.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <!-- Grid Operator Card -->
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="100">
+        <div class="portal-card">
+          <div class="portal-header" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="badge bg-light text-primary fw-bold">CONTROL ROOM</span>
+              <i class="bi bi-cpu-fill fs-4"></i>
+            </div>
+            <h4 class="fw-bold mb-1">Grid Operator</h4>
+            <p class="small mb-0 text-white-50">Real-time control room monitoring & dispatch</p>
+          </div>
+          <div class="portal-body">
+            <div>
+              <p class="text-muted small">
+                Designed for substation operators to oversee live voltage feeds, acknowledge fault alarms, and manage circuit breaker trips.
+              </p>
+              <ul class="list-unstyled small text-secondary">
+                <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i> Real-time SCADA telemetry visualization</li>
+                <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i> Feeder trip alarms and emergency overrides</li>
+                <li class="mb-2"><i class="bi bi-check2 text-primary me-2"></i> Profile and operator credentials update</li>
+              </ul>
+            </div>
+            <div class="d-grid gap-2 mt-4">
+              <a href="/login" class="btn btn-outline-primary fw-semibold"><i class="bi bi-box-arrow-in-right me-1"></i> Operator Sign In</a>
+              <a href="/operator_registration" class="btn btn-primary fw-semibold"><i class="bi bi-person-plus me-1"></i> Register as Operator</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Maintenance Technician Card -->
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="200">
+        <div class="portal-card">
+          <div class="portal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="badge bg-light text-success fw-bold">FIELD SERVICE</span>
+              <i class="bi bi-tools fs-4"></i>
+            </div>
+            <h4 class="fw-bold mb-1">Maintenance Technician</h4>
+            <p class="small mb-0 text-white-50">On-site inspections, repair & diagnostics</p>
+          </div>
+          <div class="portal-body">
+            <div>
+              <p class="text-muted small">
+                Tailored for field electrical engineers and technicians executing physical inspections, transformer tests, and line restoration.
+              </p>
+              <ul class="list-unstyled small text-secondary">
+                <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> Work orders and diagnostic tools hub</li>
+                <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> Specialization & field experience tracking</li>
+                <li class="mb-2"><i class="bi bi-check2 text-success me-2"></i> Mobile-friendly field service profile</li>
+              </ul>
+            </div>
+            <div class="d-grid gap-2 mt-4">
+              <a href="/login" class="btn btn-outline-success fw-semibold"><i class="bi bi-box-arrow-in-right me-1"></i> Technician Sign In</a>
+              <a href="/technician_registration" class="btn btn-success fw-semibold"><i class="bi bi-person-plus me-1"></i> Register as Technician</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Central Admin Card -->
+      <div class="col-lg-4" data-aos="fade-up" data-aos-delay="300">
+        <div class="portal-card">
+          <div class="portal-header" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="badge bg-primary text-white fw-bold">SYSTEM ADMIN</span>
+              <i class="bi bi-shield-lock-fill fs-4"></i>
+            </div>
+            <h4 class="fw-bold mb-1">Central Administrator</h4>
+            <p class="small mb-0 text-white-50">Full system governance & user management</p>
+          </div>
+          <div class="portal-body">
+            <div>
+              <p class="text-muted small">
+                Complete oversight of the smart grid personnel, monitoring registered operators, field technicians, and system telemetry health.
+              </p>
+              <ul class="list-unstyled small text-secondary">
+                <li class="mb-2"><i class="bi bi-check2 text-dark me-2"></i> Personnel audit & operator verification</li>
+                <li class="mb-2"><i class="bi bi-check2 text-dark me-2"></i> Technician roster with qualifications</li>
+                <li class="mb-2"><i class="bi bi-check2 text-dark me-2"></i> System security & Django admin interface</li>
+              </ul>
+            </div>
+            <div class="d-grid gap-2 mt-4">
+              <a href="/login" class="btn btn-dark fw-semibold"><i class="bi bi-shield-lock me-1"></i> Administrator Login</a>
+              <a href="/admin_home" class="btn btn-outline-secondary fw-semibold"><i class="bi bi-speedometer2 me-1"></i> Admin Dashboard</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact & Support Section -->
+<section id="contact" class="py-5 bg-light">
+  <div class="container py-4">
+    <div class="row g-4 align-items-center">
+      <div class="col-lg-6" data-aos="fade-right">
+        <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-semibold">24/7 Operations</span>
+        <h2 class="display-6 fw-bold mt-2 text-dark">Grid Dispatch Emergency Support</h2>
+        <p class="text-muted">
+          Our centralized dispatch and SCADA engineering teams are available around the clock to support operators and field teams during emergency grid incidents.
+        </p>
+
+        <div class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border mb-3 shadow-sm">
+          <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-circle">
+            <i class="bi bi-telephone-inbound fs-4"></i>
+          </div>
+          <div>
+            <div class="small text-muted">Emergency Dispatch Hotline</div>
+            <div class="fw-bold text-dark fs-5">+1 (800) 555-GRID (4743)</div>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-3 p-3 bg-white rounded-3 border shadow-sm">
+          <div class="p-3 bg-success bg-opacity-10 text-success rounded-circle">
+            <i class="bi bi-envelope-check fs-4"></i>
+          </div>
+          <div>
+            <div class="small text-muted">Technical SCADA Inquiries</div>
+            <div class="fw-bold text-dark fs-5">support@smartgrid-ai.org</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6" data-aos="fade-left">
+        <div class="card border-0 shadow-sm p-4 rounded-4">
+          <h4 class="fw-bold text-dark mb-3">Quick Incident Inquiry</h4>
+          <form onsubmit="event.preventDefault(); alert('Inquiry recorded in dispatch log.');">
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Full Name / Unit</label>
+              <input type="text" class="form-control" placeholder="e.g. John Doe / Substation S-12" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Official Email</label>
+              <input type="email" class="form-control" placeholder="name@powercorp.com" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label small fw-semibold">Inquiry / Report Details</label>
+              <textarea class="form-control" rows="3" placeholder="Describe telemetry anomaly or substation request..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-gradient-primary w-100 py-2 fw-semibold">
+              <i class="bi bi-send me-1"></i> Submit to Dispatch Center
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
