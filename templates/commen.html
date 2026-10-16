@@ -5,7 +5,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}Automated Grant Proposal Evaluation System{% endblock %}</title>
+  <title>{% block title %}Smart Grid Fault Detection System{% endblock %}</title>
   
   <!-- Favicons -->
   <link href="{% static 'assets/img/favicon.png' %}" rel="icon">
@@ -14,7 +14,7 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Raleway:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Vendor CSS Files -->
   <link href="{% static 'assets/vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
@@ -28,78 +28,85 @@
 
   <style>
     :root {
-      --ag-primary: #0d6efd;
-      --ag-primary-dark: #0a4fba;
-      --ag-accent: #1bbd36;
-      --ag-dark: #121824;
-      --ag-surface: #f8fafc;
-      --ag-border: #e2e8f0;
+      --sg-primary: #0284c7;
+      --sg-primary-dark: #0369a1;
+      --sg-accent: #10b981;
+      --sg-warning: #f59e0b;
+      --sg-danger: #ef4444;
+      --sg-dark: #0f172a;
+      --sg-darker: #020617;
+      --sg-surface: #f8fafc;
+      --sg-border: #e2e8f0;
     }
 
     body {
       font-family: 'Inter', sans-serif;
-      background-color: var(--ag-surface);
+      background-color: var(--sg-surface);
       color: #334155;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    .ag-navbar-top {
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Outfit', 'Inter', sans-serif;
+    }
+
+    .sg-navbar-top {
       background: #0f172a;
       color: #94a3b8;
       font-size: 0.85rem;
-      padding: 6px 0;
+      padding: 7px 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .ag-navbar-top a {
+    .sg-navbar-top a {
       color: #cbd5e1;
       text-decoration: none;
       transition: color 0.2s;
     }
 
-    .ag-navbar-top a:hover {
+    .sg-navbar-top a:hover {
       color: #38bdf8;
     }
 
-    .ag-navbar-main {
+    .sg-navbar-main {
       background: #ffffff;
       box-shadow: 0 4px 20px rgba(15, 23, 42, 0.06);
-      border-bottom: 1px solid var(--ag-border);
+      border-bottom: 1px solid var(--sg-border);
       padding: 12px 0;
     }
 
-    .ag-brand {
+    .sg-brand {
       display: flex;
       align-items: center;
       gap: 12px;
       text-decoration: none;
     }
 
-    .ag-brand-icon {
+    .sg-brand-icon {
       width: 44px;
       height: 44px;
       border-radius: 12px;
-      background: linear-gradient(135deg, #0d6efd 0%, #1bbd36 100%);
+      background: linear-gradient(135deg, #0284c7 0%, #10b981 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
       font-size: 1.35rem;
-      box-shadow: 0 8px 16px rgba(13, 110, 253, 0.25);
+      box-shadow: 0 8px 16px rgba(2, 132, 199, 0.28);
     }
 
-    .ag-brand-title {
+    .sg-brand-title {
       font-weight: 800;
-      font-size: 1.15rem;
+      font-size: 1.2rem;
       letter-spacing: -0.02em;
       color: #0f172a;
       line-height: 1.1;
       margin: 0;
     }
 
-    .ag-brand-subtitle {
+    .sg-brand-subtitle {
       font-size: 0.72rem;
       font-weight: 600;
       color: #64748b;
@@ -118,55 +125,72 @@
     }
 
     .nav-link-custom:hover {
-      color: #0d6efd !important;
+      color: #0284c7 !important;
       background: #f1f5f9;
     }
 
     .nav-link-custom.active {
-      color: #0d6efd !important;
-      background: #eff6ff;
+      color: #0284c7 !important;
+      background: #e0f2fe;
       font-weight: 600;
     }
 
     .btn-gradient-primary {
-      background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
       color: #ffffff !important;
       border: none;
       font-weight: 600;
       padding: 8px 20px;
       border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
       transition: all 0.25s ease;
     }
 
     .btn-gradient-primary:hover {
-      background: linear-gradient(135deg, #0b5ed7 0%, #0a4fba 100%);
-      box-shadow: 0 6px 16px rgba(13, 110, 253, 0.35);
+      background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
       transform: translateY(-1px);
     }
 
-    .ag-footer {
+    .btn-gradient-accent {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #ffffff !important;
+      border: none;
+      font-weight: 600;
+      padding: 8px 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
+      transition: all 0.25s ease;
+    }
+
+    .btn-gradient-accent:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .sg-footer {
       margin-top: auto;
       background: #0f172a;
       color: #94a3b8;
-      padding: 40px 0 20px;
+      padding: 45px 0 24px;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .ag-footer h5 {
+    .sg-footer h5 {
       color: #ffffff;
       font-weight: 700;
       font-size: 1rem;
       margin-bottom: 16px;
     }
 
-    .ag-footer a {
+    .sg-footer a {
       color: #94a3b8;
       text-decoration: none;
       transition: color 0.2s;
     }
 
-    .ag-footer a:hover {
+    .sg-footer a:hover {
       color: #38bdf8;
     }
 
@@ -174,6 +198,40 @@
       border-radius: 10px;
       border: none;
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+    }
+
+    .live-pulse-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      background: rgba(16, 185, 129, 0.15);
+      color: #10b981;
+      border: 1px solid rgba(16, 185, 129, 0.3);
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10b981;
+      box-shadow: 0 0 0 rgba(16, 185, 129, 0.6);
+      animation: pulse-animation 1.8s infinite;
+    }
+
+    @keyframes pulse-animation {
+      0% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+      }
     }
   </style>
 
@@ -183,95 +241,107 @@
 <body>
 
   <!-- Top Strip -->
-  <div class="ag-navbar-top">
+  <div class="sg-navbar-top">
     <div class="container d-flex justify-content-between align-items-center">
-      <div>
-        <span class="me-3"><i class="bi bi-shield-check me-1 text-success"></i> Secure Automated AI Peer Review System</span>
-        <span class="d-none d-md-inline text-muted">|</span>
-        <span class="d-none d-md-inline ms-3"><i class="bi bi-cpu me-1 text-info"></i> NLP Powered Proposal Evaluation Engine</span>
+      <div class="d-flex align-items-center">
+        <span class="live-pulse-badge me-3 d-none d-sm-inline-flex">
+          <span class="pulse-dot"></span> SCADA TELEMETRY ACTIVE
+        </span>
+        <span class="me-3"><i class="bi bi-broadcast me-1 text-info"></i> Smart Grid Fault Detection & Localization</span>
+        <span class="d-none d-lg-inline text-muted">|</span>
+        <span class="d-none d-lg-inline ms-3"><i class="bi bi-lightning-charge me-1 text-warning"></i> AI Automated Anomaly Diagnostics</span>
       </div>
       <div class="d-flex align-items-center gap-3">
-        {% if user.is_authenticated or request.session.username %}
+        {% if request.session.username %}
           <span class="text-white small">
-            <i class="bi bi-person-circle me-1"></i> Logged in as: <strong>{{ user.username|default:request.session.username }}</strong>
-            <span class="badge bg-primary ms-1">{{ user.user_type|default:request.session.usertype }}</span>
+            <i class="bi bi-person-circle me-1"></i> Logged in: <strong>{{ request.session.username }}</strong>
+            <span class="badge bg-primary ms-1">{{ request.session.usertype }}</span>
           </span>
-          <a href="/profile/" class="text-info small"><i class="bi bi-person-gear me-1"></i> Profile</a>
-          <a href="/logout/" class="text-danger small fw-semibold"><i class="bi bi-box-arrow-right"></i> Logout</a>
+          {% if request.session.usertype == 'Admin' %}
+            <a href="/admin_home" class="text-info small fw-semibold"><i class="bi bi-speedometer2 me-1"></i> Admin Console</a>
+          {% elif request.session.usertype == 'Grid Operator' %}
+            <a href="/operator_home" class="text-info small fw-semibold"><i class="bi bi-speedometer2 me-1"></i> Control Room</a>
+          {% elif request.session.usertype == 'Maintenance Technician' %}
+            <a href="/technician_home" class="text-info small fw-semibold"><i class="bi bi-speedometer2 me-1"></i> Field Portal</a>
+          {% endif %}
+          <a href="/logout" class="text-danger small fw-semibold"><i class="bi bi-box-arrow-right"></i> Logout</a>
         {% else %}
-          <a href="/login/"><i class="bi bi-box-arrow-in-right me-1"></i> Sign In</a>
-          <a href="/applicant_registration/"><i class="bi bi-person-plus me-1"></i> Applicant Register</a>
-          <a href="/reviewer_registration/"><i class="bi bi-mortarboard me-1"></i> Reviewer Register</a>
+          <a href="/login"><i class="bi bi-box-arrow-in-right me-1"></i> Portal Login</a>
+          <a href="/operator_registration" class="d-none d-md-inline"><i class="bi bi-person-badge me-1"></i> Operator Register</a>
+          <a href="/technician_registration" class="d-none d-md-inline"><i class="bi bi-tools me-1"></i> Technician Register</a>
         {% endif %}
       </div>
     </div>
   </div>
 
   <!-- Main Navigation -->
-  <nav class="navbar navbar-expand-lg ag-navbar-main sticky-top">
+  <nav class="navbar navbar-expand-lg sg-navbar-main sticky-top">
     <div class="container">
-      <a class="ag-brand" href="/">
-        <div class="ag-brand-icon">
-          <i class="bi bi-award-fill"></i>
+      <a class="sg-brand" href="/">
+        <div class="sg-brand-icon">
+          <i class="bi bi-lightning-charge-fill"></i>
         </div>
         <div>
-          <h1 class="ag-brand-title">AGPES</h1>
-          <p class="ag-brand-subtitle">Automated Grant Proposal Evaluation</p>
+          <h1 class="sg-brand-title">SmartGrid AI</h1>
+          <p class="sg-brand-subtitle">Fault Detection & Grid Telemetry</p>
         </div>
       </a>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#agMainNav">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sgMainNav">
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="agMainNav">
+      <div class="collapse navbar-collapse" id="sgMainNav">
         <ul class="navbar-nav me-auto ms-lg-4">
           <li class="nav-item">
             <a class="nav-link nav-link-custom" href="/"><i class="bi bi-house-door me-1"></i> Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link nav-link-custom" href="/#about"><i class="bi bi-info-circle me-1"></i> About System</a>
+            <a class="nav-link nav-link-custom" href="/#features"><i class="bi bi-grid-3x3-gap me-1"></i> Grid Features</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link nav-link-custom" href="/#pipeline"><i class="bi bi-diagram-3 me-1"></i> AI Evaluation Pipeline</a>
+            <a class="nav-link nav-link-custom" href="/#detection"><i class="bi bi-activity me-1"></i> Fault Detection AI</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link nav-link-custom" href="/#grants"><i class="bi bi-briefcase me-1"></i> Funding Calls</a>
+            <a class="nav-link nav-link-custom" href="/#substations"><i class="bi bi-diagram-3 me-1"></i> Substations</a>
           </li>
-          {% if request.session.usertype == 'Applicant' %}
+          <li class="nav-item">
+            <a class="nav-link nav-link-custom" href="/#contact"><i class="bi bi-headset me-1"></i> Support</a>
+          </li>
+          {% if request.session.usertype == 'Admin' %}
             <li class="nav-item">
-              <a class="nav-link nav-link-custom active text-primary fw-bold" href="/applicant/"><i class="bi bi-speedometer2 me-1"></i> Applicant Dashboard</a>
+              <a class="nav-link nav-link-custom active text-primary fw-bold" href="/admin_home"><i class="bi bi-shield-lock me-1"></i> Admin Console</a>
             </li>
-          {% elif request.session.usertype == 'Reviewer' %}
+          {% elif request.session.usertype == 'Grid Operator' %}
             <li class="nav-item">
-              <a class="nav-link nav-link-custom active text-primary fw-bold" href="/reviewer/"><i class="bi bi-check2-circle me-1"></i> Reviewer Portal</a>
+              <a class="nav-link nav-link-custom active text-primary fw-bold" href="/operator_home"><i class="bi bi-cpu me-1"></i> Operator Room</a>
             </li>
-          {% elif request.session.usertype == 'Admin' %}
+          {% elif request.session.usertype == 'Maintenance Technician' %}
             <li class="nav-item">
-              <a class="nav-link nav-link-custom active text-primary fw-bold" href="/admin/"><i class="bi bi-shield-lock me-1"></i> Admin Console</a>
+              <a class="nav-link nav-link-custom active text-primary fw-bold" href="/technician_home"><i class="bi bi-tools me-1"></i> Technician Portal</a>
             </li>
           {% endif %}
         </ul>
 
         <div class="d-flex align-items-center gap-2">
           {% if request.session.username %}
-            {% if request.session.usertype == 'Applicant' %}
-              <a href="/applicant/" class="btn btn-outline-primary btn-sm"><i class="bi bi-folder2-open me-1"></i> My Proposals</a>
-            {% elif request.session.usertype == 'Reviewer' %}
-              <a href="/reviewer/" class="btn btn-outline-primary btn-sm"><i class="bi bi-clipboard-check me-1"></i> Assigned Reviews</a>
-            {% elif request.session.usertype == 'Admin' %}
-              <a href="/admin/" class="btn btn-outline-primary btn-sm"><i class="bi bi-kanban me-1"></i> Management</a>
+            {% if request.session.usertype == 'Admin' %}
+              <a href="/admin_home" class="btn btn-outline-primary btn-sm"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
+            {% elif request.session.usertype == 'Grid Operator' %}
+              <a href="/operator_home" class="btn btn-outline-primary btn-sm"><i class="bi bi-speedometer2 me-1"></i> Control Panel</a>
+            {% elif request.session.usertype == 'Maintenance Technician' %}
+              <a href="/technician_home" class="btn btn-outline-primary btn-sm"><i class="bi bi-speedometer2 me-1"></i> Work Orders</a>
             {% endif %}
-            <a href="/logout/" class="btn btn-danger btn-sm"><i class="bi bi-box-arrow-right"></i></a>
+            <a href="/logout" class="btn btn-danger btn-sm" title="Logout"><i class="bi bi-box-arrow-right"></i></a>
           {% else %}
-            <a href="/login/" class="btn btn-outline-primary btn-sm px-3 fw-semibold"><i class="bi bi-box-arrow-in-right me-1"></i> Login</a>
+            <a href="/login" class="btn btn-outline-primary btn-sm px-3 fw-semibold"><i class="bi bi-box-arrow-in-right me-1"></i> Login</a>
             <div class="dropdown">
               <button class="btn btn-gradient-primary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                <i class="bi bi-pencil-square me-1"></i> Register
+                <i class="bi bi-person-plus me-1"></i> Register
               </button>
               <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
-                <li><a class="dropdown-item py-2" href="/applicant_registration/"><i class="bi bi-person me-2 text-primary"></i> As Applicant</a></li>
-                <li><a class="dropdown-item py-2" href="/reviewer_registration/"><i class="bi bi-mortarboard me-2 text-success"></i> As Reviewer</a></li>
+                <li><a class="dropdown-item py-2" href="/operator_registration"><i class="bi bi-person-badge me-2 text-primary"></i> As Grid Operator</a></li>
+                <li><a class="dropdown-item py-2" href="/technician_registration"><i class="bi bi-tools me-2 text-success"></i> As Maintenance Technician</a></li>
               </ul>
             </div>
           {% endif %}
@@ -308,52 +378,51 @@
   </main>
 
   <!-- Footer -->
-  <footer class="ag-footer">
+  <footer class="sg-footer">
     <div class="container">
       <div class="row g-4 mb-4">
         <div class="col-lg-4 col-md-6">
           <div class="d-flex align-items-center gap-2 mb-3">
-            <div class="ag-brand-icon" style="width: 36px; height: 36px; font-size: 1.1rem;">
-              <i class="bi bi-award-fill"></i>
+            <div class="sg-brand-icon" style="width: 36px; height: 36px; font-size: 1.1rem;">
+              <i class="bi bi-lightning-charge-fill"></i>
             </div>
-            <h5 class="mb-0 text-white">AGPES</h5>
+            <h5 class="mb-0 text-white">SmartGrid AI</h5>
           </div>
           <p class="small text-secondary">
-            Automated Grant Proposal Evaluation System leverages artificial intelligence, NLP, and intelligent peer-matching algorithms to deliver unbiased, transparent, and accelerated research funding evaluation.
+            Advanced Smart Grid Fault Detection & Telemetry Platform. Empowering grid operators and field technicians with predictive machine learning, high-voltage line monitoring, and millisecond fault localization.
           </p>
           <div class="d-flex gap-3 text-secondary mt-3">
-            <a href="#" class="fs-5"><i class="bi bi-shield-check text-success"></i></a>
-            <a href="#" class="fs-5"><i class="bi bi-cpu text-info"></i></a>
-            <a href="#" class="fs-5"><i class="bi bi-graph-up text-primary"></i></a>
+            <span class="badge bg-dark border border-secondary text-info"><i class="bi bi-cpu me-1"></i> AI Neural Predictor</span>
+            <span class="badge bg-dark border border-secondary text-success"><i class="bi bi-shield-check me-1"></i> 99.98% Grid Reliability</span>
           </div>
         </div>
         <div class="col-lg-2 col-md-6">
           <h5>Quick Portals</h5>
           <ul class="list-unstyled small">
-            <li class="mb-2"><a href="/login/"><i class="bi bi-chevron-right me-1"></i> Sign In Portal</a></li>
-            <li class="mb-2"><a href="/applicant_registration/"><i class="bi bi-chevron-right me-1"></i> Grant Applicant</a></li>
-            <li class="mb-2"><a href="/reviewer_registration/"><i class="bi bi-chevron-right me-1"></i> Peer Reviewer</a></li>
-            <li class="mb-2"><a href="/admin/"><i class="bi bi-chevron-right me-1"></i> Administration</a></li>
+            <li class="mb-2"><a href="/login"><i class="bi bi-chevron-right me-1"></i> Secure Login</a></li>
+            <li class="mb-2"><a href="/operator_registration"><i class="bi bi-chevron-right me-1"></i> Operator Register</a></li>
+            <li class="mb-2"><a href="/technician_registration"><i class="bi bi-chevron-right me-1"></i> Technician Register</a></li>
+            <li class="mb-2"><a href="/admin_home"><i class="bi bi-chevron-right me-1"></i> Admin Console</a></li>
           </ul>
         </div>
         <div class="col-lg-3 col-md-6">
-          <h5>Evaluation Pillars</h5>
+          <h5>Fault Analytics</h5>
           <ul class="list-unstyled small">
-            <li class="mb-2"><a href="#"><i class="bi bi-check2 text-success me-1"></i> Novelty & Technical Innovation</a></li>
-            <li class="mb-2"><a href="#"><i class="bi bi-check2 text-success me-1"></i> Methodology Feasibility</a></li>
-            <li class="mb-2"><a href="#"><i class="bi bi-check2 text-success me-1"></i> Budget Realism & Justification</a></li>
-            <li class="mb-2"><a href="#"><i class="bi bi-check2 text-success me-1"></i> Societal & Environmental Impact</a></li>
+            <li class="mb-2"><a href="#"><i class="bi bi-check2 text-success me-1"></i> Symmetrical & Asymmetrical Faults</a></li>
+            <li class="mb-2"><a href="#"><i class="bi bi-check2 text-success me-1"></i> Line-to-Ground (L-G) Detection</a></li>
+            <li class="mb-2"><a href="#"><i class="bi bi-check2 text-success me-1"></i> Transformer Thermal Overload</a></li>
+            <li class="mb-2"><a href="#"><i class="bi bi-check2 text-success me-1"></i> Transient Frequency Instability</a></li>
           </ul>
         </div>
         <div class="col-lg-3 col-md-6">
-          <h5>Helpdesk & Support</h5>
-          <p class="small mb-2"><i class="bi bi-geo-alt me-2 text-primary"></i> National Science & Innovation Center</p>
-          <p class="small mb-2"><i class="bi bi-envelope me-2 text-primary"></i> grants-evaluation@agpes.org</p>
-          <p class="small mb-2"><i class="bi bi-telephone me-2 text-primary"></i> +1 (800) 247-GRANT</p>
+          <h5>Grid Dispatch & Support</h5>
+          <p class="small mb-2"><i class="bi bi-geo-alt me-2 text-primary"></i> Central Grid Dispatch & SCADA Center</p>
+          <p class="small mb-2"><i class="bi bi-envelope me-2 text-primary"></i> control@smartgrid-dispatch.org</p>
+          <p class="small mb-2"><i class="bi bi-telephone me-2 text-primary"></i> 24/7 Grid Hotline: +1 (800) 555-GRID</p>
         </div>
       </div>
       <div class="pt-3 border-top border-secondary text-center small text-secondary">
-        <p class="mb-0">© 2026 Automated Grant Proposal Evaluation System (AGPES). All Rights Reserved.</p>
+        <p class="mb-0">© 2026 Smart Grid Fault Detection & Localization System. All Rights Reserved.</p>
       </div>
     </div>
   </footer>
@@ -366,6 +435,16 @@
 
   <!-- Main JS File -->
   <script src="{% static 'assets/js/main.js' %}"></script>
+
+  <script>
+    if (typeof AOS !== 'undefined') {
+      AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true
+      });
+    }
+  </script>
 
   {% block extra_js %}{% endblock %}
 </body>
