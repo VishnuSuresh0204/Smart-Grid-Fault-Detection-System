@@ -1,0 +1,147 @@
+{% extends 'TECHNICIAN/commen.html' %}
+{% load static %}
+
+{% block title %}Technician Profile & Qualifications - Smart Grid AI{% endblock %}
+
+{% block content %}
+<div class="row g-4 mb-4">
+  <div class="col-12" data-aos="fade-down">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 p-4 bg-white rounded-4 border shadow-sm">
+      <div class="d-flex align-items-center gap-3">
+        <a href="/technician_home" class="btn btn-sm btn-outline-secondary py-1 px-2">
+          <i class="bi bi-arrow-left"></i>
+        </a>
+        <div>
+          <h3 class="fw-bold text-dark mb-0">Technician Profile & Field Qualifications</h3>
+          <p class="text-muted small mb-0">Manage engineering certifications, field experience, contact info, and profile image.</p>
+        </div>
+      </div>
+      <div>
+        <span class="badge bg-success fs-6 px-3 py-2 rounded-pill font-monospace">
+          {{ profile.employee_id }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Profile Summary Sidebar -->
+  <div class="col-lg-4" data-aos="fade-right">
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white text-center">
+      <div class="py-3">
+        {% if profile.profile_image %}
+          <img src="{{ profile.profile_image.url }}" alt="{{ profile.name }}" class="rounded-circle border border-3 border-success p-1 shadow mb-3" style="width: 120px; height: 120px; object-fit: cover;">
+        {% else %}
+          <div class="rounded-circle bg-success bg-opacity-10 text-success d-inline-flex align-items-center justify-content-center fw-bold fs-1 border border-2 border-success mb-3 shadow-sm" style="width: 120px; height: 120px;">
+            {{ profile.name|slice:":1"|upper }}
+          </div>
+        {% endif %}
+        <h4 class="fw-bold text-dark mb-1">{{ profile.name }}</h4>
+        <span class="badge bg-success px-3 py-1">Maintenance Technician</span>
+        <div class="text-muted small mt-2">{{ profile.specialization|default:"High Voltage Diagnostics" }}</div>
+      </div>
+
+      <div class="border-top pt-3 text-start small">
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Username:</span>
+          <span class="fw-semibold text-dark">{{ user.username }}</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Email:</span>
+          <span class="fw-semibold text-dark">{{ profile.email }}</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Phone:</span>
+          <span class="fw-semibold text-dark">{{ profile.phone }}</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Qualification:</span>
+          <span class="fw-semibold text-dark">{{ profile.qualification|default:"Certified Engineer" }}</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Experience:</span>
+          <span class="badge bg-primary bg-opacity-10 text-primary">{{ profile.experience_years }} Years</span>
+        </div>
+        <div class="d-flex justify-content-between mb-2">
+          <span class="text-muted">Employee ID:</span>
+          <span class="font-monospace fw-semibold">{{ profile.employee_id }}</span>
+        </div>
+        <div class="d-flex justify-content-between">
+          <span class="text-muted">Enrolled:</span>
+          <span>{{ profile.created_at|date:"M d, Y" }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Edit Form -->
+  <div class="col-lg-8" data-aos="fade-left">
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+      <h5 class="fw-bold text-dark mb-3">Update Field Credentials & Contact</h5>
+      <p class="text-muted small mb-4">Keep your qualification, field specialization, and base depot address up to date for emergency dispatch.</p>
+
+      <form method="POST" action="/technician_profile" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold text-secondary">Full Name</label>
+            <input type="text" name="name" class="form-control" value="{{ profile.name }}" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label small fw-semibold text-secondary">Contact Phone</label>
+            <input type="tel" name="phone" class="form-control" value="{{ profile.phone }}" required>
+          </div>
+          <div class="col-md-5">
+            <label class="form-label small fw-semibold text-secondary">Engineering Qualification</label>
+            <input type="text" name="qualification" class="form-control" value="{{ profile.qualification }}" required>
+          </div>
+          <div class="col-md-5">
+            <label class="form-label small fw-semibold text-secondary">Specialization</label>
+            <input type="text" name="specialization" class="form-control" value="{{ profile.specialization }}" required>
+          </div>
+          <div class="col-md-2">
+            <label class="form-label small fw-semibold text-secondary">Exp (Yrs)</label>
+            <input type="number" name="experience_years" min="0" max="50" class="form-control" value="{{ profile.experience_years }}" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label small fw-semibold text-secondary">Base Depot / Maintenance Station Address</label>
+            <textarea name="address" rows="3" class="form-control" required>{{ profile.address }}</textarea>
+          </div>
+        </div>
+
+        <!-- Read-Only System Details -->
+        <div class="row g-3 mb-4 p-3 bg-light rounded-3 border">
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold text-muted">Portal Username</label>
+            <input type="text" class="form-control bg-white" value="{{ user.username }}" readonly disabled>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold text-muted">Employee / License ID</label>
+            <input type="text" class="form-control bg-white font-monospace" value="{{ profile.employee_id }}" readonly disabled>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label small fw-semibold text-muted">Registered Email</label>
+            <input type="text" class="form-control bg-white" value="{{ profile.email }}" readonly disabled>
+          </div>
+        </div>
+
+        <!-- Profile Photo Upload -->
+        <div class="mb-4">
+          <label class="form-label small fw-semibold text-secondary">Update Photo ID Badge</label>
+          <input type="file" name="profile_image" class="form-control" accept="image/*">
+          <div class="form-text small">Select a new image file to update your technician badge photo.</div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2">
+          <a href="/technician_home" class="btn btn-outline-secondary">Cancel</a>
+          <button type="submit" class="btn btn-success px-4 fw-semibold">
+            <i class="bi bi-check2-circle me-1"></i> Save Changes
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
