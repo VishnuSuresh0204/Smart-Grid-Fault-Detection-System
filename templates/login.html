@@ -1,0 +1,172 @@
+{% extends 'commen.html' %}
+{% load static %}
+
+{% block title %}Sign In - Smart Grid Fault Detection System{% endblock %}
+
+{% block extra_css %}
+<style>
+  .auth-wrapper {
+    min-height: calc(85vh - 120px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px 15px;
+    background: radial-gradient(circle at 50% 20%, rgba(2, 132, 199, 0.08) 0%, rgba(248, 250, 252, 0) 70%);
+  }
+
+  .auth-card {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid var(--sg-border);
+    box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+    width: 100%;
+    max-width: 480px;
+    transition: transform 0.25s ease;
+  }
+
+  .auth-header {
+    background: linear-gradient(135deg, #0f172a 0%, #0369a1 100%);
+    color: #ffffff;
+    padding: 35px 30px 25px;
+    text-align: center;
+    position: relative;
+  }
+
+  .auth-header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 12px;
+    background: #ffffff;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .auth-icon-badge {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: #38bdf8;
+    margin: 0 auto 16px;
+  }
+
+  .auth-body {
+    padding: 30px;
+  }
+
+  .form-control {
+    border-radius: 10px;
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    font-size: 0.95rem;
+  }
+
+  .form-control:focus {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
+  }
+
+  .input-group-text {
+    border-radius: 10px 0 0 10px;
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    color: #64748b;
+  }
+
+  .role-indicator-pill {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+  <div class="auth-card" data-aos="zoom-in">
+    <div class="auth-header">
+      <div class="auth-icon-badge">
+        <i class="bi bi-shield-lock-fill"></i>
+      </div>
+      <h3 class="fw-bold mb-1">SmartGrid Portal</h3>
+      <p class="small text-white-50 mb-0">Authorized SCADA & Maintenance Personnel Access</p>
+    </div>
+
+    <div class="auth-body">
+      <!-- Role tags info -->
+      <div class="d-flex justify-content-center gap-2 mb-4">
+        <span class="role-indicator-pill bg-dark text-white"><i class="bi bi-shield-check me-1"></i> Admin</span>
+        <span class="role-indicator-pill bg-primary bg-opacity-10 text-primary"><i class="bi bi-cpu me-1"></i> Operator</span>
+        <span class="role-indicator-pill bg-success bg-opacity-10 text-success"><i class="bi bi-tools me-1"></i> Technician</span>
+      </div>
+
+      <form method="POST" action="/login">
+        {% csrf_token %}
+        
+        <div class="mb-3">
+          <label class="form-label small fw-semibold text-secondary">Username or Employee ID</label>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-person"></i></span>
+            <input type="text" name="username" class="form-control" placeholder="Enter username" required autofocus>
+          </div>
+        </div>
+
+        <div class="mb-4">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <label class="form-label small fw-semibold text-secondary mb-0">Password</label>
+          </div>
+          <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-key"></i></span>
+            <input type="password" name="password" id="passwordInput" class="form-control" placeholder="Enter security password" required>
+            <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility()">
+              <i class="bi bi-eye" id="toggleIcon"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-gradient-primary w-100 py-2 fs-6 fw-bold">
+          <i class="bi bi-box-arrow-in-right me-2"></i> Authenticate & Enter
+        </button>
+      </form>
+
+      <div class="mt-4 pt-3 border-top text-center">
+        <p class="small text-muted mb-2">Need to register a new operator or field technician?</p>
+        <div class="d-flex justify-content-center gap-2">
+          <a href="/operator_registration" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-person-badge me-1"></i> Operator Register
+          </a>
+          <a href="/technician_registration" class="btn btn-sm btn-outline-success">
+            <i class="bi bi-tools me-1"></i> Technician Register
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('passwordInput');
+    const toggleIcon = document.getElementById('toggleIcon');
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      toggleIcon.classList.replace('bi-eye', 'bi-eye-slash');
+    } else {
+      passwordInput.type = 'password';
+      toggleIcon.classList.replace('bi-eye-slash', 'bi-eye');
+    }
+  }
+</script>
+{% endblock %}
