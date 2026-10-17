@@ -9,7 +9,7 @@ from django.db import IntegrityError, transaction
 from django.utils import timezone
 
 from .models import *
-
+from .ml_utils import predict_fault
 
 # =========================================================
 # HELPER FUNCTIONS
@@ -1145,3 +1145,57 @@ def update_maintenance_status(request, record_id):
 
     messages.success(request, 'Maintenance task updated successfully.')
     return redirect('/maintenance_records')
+
+
+
+
+# =========================================================
+# GRID OPERATOR - RUN ML FAULT PREDICTION
+# =========================================================
+
+def run_fault_prediction(request, measurement_id):
+
+    user = require_role(request, ['Grid Operator'])
+
+    if not user:
+        messages.error(request, 'Please log in as a Grid Operator.')
+        return redirect('/login')
+
+    # Operators can analyze only their own measurements.
+    measurement = get_object_or_404(
+        ElectricalMeasurement,
+        id=measurement_id,
+        recorded_by=user,
+    )
+
+    # Predictions must be triggered through POST.
+    if request.method != 'POST':
+        return redirect('/measurement_history')
+
+    try:
+        result = predict_fault(measurement)
+    except ValueError as error:
+        messages.error(request, f'Measurement cannot be analyzed: {error}')
+        return redirect('/measurement_history')
+
+    with transaction.atomic():
+        prediction = FaultPrediction.objects.create(
+            measurement=measurement,
+            model_name=result['model_name'],
+            model_version=result['model_version'],
+            predicted_fault=result['predicted_fault'],
+            confidence_score=result['confidence_score'],
+            severity=result['severity'],
+            explanation=result['explanation'],
+            verification_status='Pending',
+        )
+
+        if result['is_fault']:
+            create_fault_alert(prediction)
+
+    messages.success(
+        request,
+        'ML analysis completed successfully.'
+    )
+
+    return redirect(f'/prediction_detail/{prediction.id}')
