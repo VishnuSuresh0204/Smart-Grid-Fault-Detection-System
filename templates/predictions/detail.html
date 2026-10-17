@@ -72,9 +72,9 @@
             <span class="small text-muted text-uppercase fw-semibold d-block">Confidence Score</span>
             <div class="fs-4 fw-bold text-primary mt-1">
               {% if prediction.confidence_score is not None %}
-                {% widthratio prediction.confidence_score 1 100 %}%
+                {{ prediction.confidence_score|floatformat:1 }}%
               {% else %}
-                94%
+                N/A
               {% endif %}
             </div>
             <small class="text-muted">Bayesian Posterior</small>
