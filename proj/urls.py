@@ -49,4 +49,13 @@ path('', views.home, name='home'),
     # Admin management
     path('view_operators', views.view_operators, name='view_operators'),
     path('view_technicians', views.view_technicians, name='view_technicians'),
+    path('manage_grid_sections', views.manage_grid_sections, name='manage_grid_sections'),
+
+    # Measurements & Telemetry
+    path('add_measurement', views.add_measurement, name='add_measurement'),
+    path('measurement_history', views.measurement_history, name='measurement_history'),
+
+    # Fault Predictions
+    path('prediction_history', views.prediction_history, name='prediction_history'),
+    path('prediction_detail/<int:prediction_id>', views.prediction_detail, name='prediction_detail'),
 ]
