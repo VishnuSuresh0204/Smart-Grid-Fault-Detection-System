@@ -21,8 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-if not SECRET_KEY:
-    raise RuntimeError("Set the DJANGO_SECRET_KEY environment variable before running Django.")
+
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
