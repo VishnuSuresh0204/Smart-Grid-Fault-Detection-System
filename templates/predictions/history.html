@@ -160,10 +160,10 @@
                 {% if p.confidence_score is not None %}
                   <div class="d-flex align-items-center gap-2">
                     <div class="progress flex-grow-1" style="height: 6px; width: 60px;">
-                      <div class="progress-bar {% if p.confidence_score >= 0.85 %}bg-success{% elif p.confidence_score >= 0.65 %}bg-warning{% else %}bg-secondary{% endif %}" 
-                           style="width: {% widthratio p.confidence_score 1 100 %}%;"></div>
+                      <div class="progress-bar {% if p.confidence_score >= 85 %}bg-success{% elif p.confidence_score >= 65 %}bg-warning{% else %}bg-secondary{% endif %}"
+                           style="width: {{ p.confidence_score|floatformat:0 }}%;"></div>
                     </div>
-                    <span class="small fw-semibold text-dark">{% widthratio p.confidence_score 1 100 %}%</span>
+                    <span class="small fw-semibold text-dark">{{ p.confidence_score|floatformat:1 }}%</span>
                   </div>
                 {% else %}
                   <span class="text-muted small">N/A</span>
