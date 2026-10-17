@@ -206,3 +206,89 @@ class FaultPrediction(models.Model):
 
     def __str__(self):
         return self.predicted_fault
+
+
+
+
+
+# ==========================================
+# 7. FAULT ALERT
+# ==========================================
+
+class FaultAlert(models.Model):
+
+    prediction = models.ForeignKey(
+        FaultPrediction,
+        on_delete=models.CASCADE,
+        related_name='alerts'
+    )
+
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+
+    status = models.CharField(
+        max_length=50,
+        default='New'
+    )
+
+    acknowledged_by = models.ForeignKey(
+        Login,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='acknowledged_alerts'
+    )
+
+    acknowledged_at = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    resolved_at = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    def __str__(self):
+        return self.title
+
+
+# ==========================================
+# 8. MAINTENANCE RECORD
+# ==========================================
+
+class MaintenanceRecord(models.Model):
+
+    prediction = models.ForeignKey(
+        FaultPrediction,
+        on_delete=models.CASCADE,
+        related_name='maintenance_records'
+    )
+
+    technician = models.ForeignKey(
+        Login,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='maintenance_records'
+    )
+
+    problem_description = models.TextField()
+    action_taken = models.TextField(blank=True)
+
+    status = models.CharField(
+        max_length=50,
+        default='Open'
+    )
+
+    assigned_at = models.DateTimeField(auto_now_add=True)
+
+    completed_at = models.DateTimeField(
+        null=True,
+        blank=True
+    )
+
+    def __str__(self):
+        return f"Maintenance Record {self.id}"
