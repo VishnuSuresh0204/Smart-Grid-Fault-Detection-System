@@ -68,4 +68,9 @@ path('', views.home, name='home'),
     path('assign_maintenance', views.assign_maintenance, name='assign_maintenance'),
     path('maintenance_records', views.maintenance_records, name='maintenance_records'),
     path('update_maintenance_status/<int:record_id>', views.update_maintenance_status, name='update_maintenance_status'),
+    path(
+        'run_fault_prediction/<int:measurement_id>',
+        views.run_fault_prediction,
+        name='run_fault_prediction',
+    ),
 ]
