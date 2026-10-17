@@ -1,0 +1,120 @@
+{% extends 'ADMIN/commen.html' %}
+{% load static %}
+
+{% block title %}Assign Maintenance Task - Smart Grid Admin{% endblock %}
+
+{% block content %}
+<!-- Page Header Banner -->
+<div class="row g-4 mb-4" data-aos="fade-down">
+  <div class="col-12">
+    <div class="p-4 rounded-4 text-white shadow-sm" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid rgba(255, 255, 255, 0.1);">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-primary px-3 py-1"><i class="bi bi-person-plus-fill me-1"></i> FIELD DISPATCH</span>
+            <span class="text-white-50 small"><i class="bi bi-tools me-1"></i> Maintenance Work Order Allocation</span>
+          </div>
+          <h2 class="fw-bold mb-1">Assign Maintenance Work Order</h2>
+          <p class="text-secondary mb-0">Dispatch certified field technicians to repair detected faults, inspect transformers, and test high-voltage switchgear.</p>
+        </div>
+        <div class="d-flex gap-2">
+          <a href="/admin_home" class="btn btn-outline-light btn-sm px-3">
+            <i class="bi bi-arrow-left me-1"></i> Dashboard
+          </a>
+          <a href="/maintenance_records" class="btn btn-outline-info btn-sm px-3">
+            <i class="bi bi-list-task me-1"></i> View Work Orders
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 justify-content-center">
+  <div class="col-lg-8" data-aos="fade-up">
+    <div class="card border-0 shadow-sm rounded-4 p-4 p-md-5 bg-white">
+      <div class="d-flex align-items-center gap-3 mb-4 pb-3 border-bottom">
+        <div class="p-3 bg-primary text-white rounded-3 fs-4">
+          <i class="bi bi-clipboard2-plus-fill"></i>
+        </div>
+        <div>
+          <h5 class="fw-bold text-dark mb-1">Create Repair Dispatch Order</h5>
+          <small class="text-muted">Link an AI-diagnosed fault event directly to a certified field maintenance technician</small>
+        </div>
+      </div>
+
+      <form method="POST" action="/assign_maintenance">
+        {% csrf_token %}
+
+        <!-- Fault Prediction Selection -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold text-dark">
+            Select Detected Fault Prediction Event <span class="text-danger">*</span>
+          </label>
+          <div class="input-group">
+            <span class="input-group-text bg-light text-warning"><i class="bi bi-lightning-charge-fill fs-5"></i></span>
+            <select name="prediction_id" class="form-select form-select-lg" required>
+              <option value="" disabled selected>-- Choose diagnosed fault prediction event --</option>
+              {% for p in predictions %}
+                <option value="{{ p.id }}">
+                  #{{ p.id }} &bull; {{ p.predicted_fault }} [{{ p.severity }}] &bull; Feeder: {{ p.measurement.grid_section.section_name }} ({{ p.measurement.grid_section.section_code }}) &bull; {{ p.analyzed_at|date:"M d, H:i" }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          <small class="text-muted mt-1 d-block">
+            {% if not predictions %}
+              <span class="text-danger"><i class="bi bi-exclamation-triangle me-1"></i> No predictions exist yet. Record electrical telemetry first to generate diagnostic events.</span>
+            {% else %}
+              Includes all AI-classified transmission anomalies requiring field technician verification.
+            {% endif %}
+          </small>
+        </div>
+
+        <!-- Technician Selection -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold text-dark">
+            Assign Maintenance Technician <span class="text-danger">*</span>
+          </label>
+          <div class="input-group">
+            <span class="input-group-text bg-light text-success"><i class="bi bi-person-fill-gear fs-5"></i></span>
+            <select name="technician" class="form-select form-select-lg" required>
+              <option value="" disabled selected>-- Select certified field technician --</option>
+              {% for tech in technicians %}
+                <option value="{{ tech.id }}">
+                  {{ tech.name }} (Emp ID: {{ tech.employee_id }}) &bull; {{ tech.specialization|default:"High-Voltage Tech" }} &bull; {{ tech.experience_years }} yrs exp &bull; Phone: {{ tech.phone }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          <small class="text-muted mt-1 d-block">
+            {% if not technicians %}
+              <span class="text-danger"><i class="bi bi-exclamation-triangle me-1"></i> No technicians registered in database. Register field technicians first.</span>
+            {% else %}
+              The assigned technician will receive this task directly in their Technician Hub.
+            {% endif %}
+          </small>
+        </div>
+
+        <!-- Problem Description -->
+        <div class="mb-4">
+          <label class="form-label fw-semibold text-dark">
+            Problem Description & Dispatch Instructions <span class="text-danger">*</span>
+          </label>
+          <textarea name="problem_description" rows="4" class="form-control" placeholder="Specify instructions for technician: e.g. Inspect disconnect switch insulators on Feeder 401-A, perform Megger insulation test, check breaker trip flags..." required></textarea>
+          <small class="text-muted mt-1 d-block">Detail safety considerations, required testing tools (Megger, FLIR thermography, contact resistance meter), and substation entry permit requirements.</small>
+        </div>
+
+        <div class="d-flex justify-content-between align-items-center pt-3 border-top">
+          <a href="/admin_home" class="btn btn-outline-secondary">
+            Cancel
+          </a>
+          <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold shadow-sm" {% if not predictions or not technicians %}disabled{% endif %}>
+            <i class="bi bi-send-check-fill me-1"></i> Dispatch Work Order
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
