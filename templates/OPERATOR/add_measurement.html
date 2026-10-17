@@ -1,0 +1,344 @@
+{% extends 'OPERATOR/commen.html' %}
+{% load static %}
+
+{% block title %}Record Telemetry Measurement - Grid Operator{% endblock %}
+
+{% block content %}
+<!-- Top Header Banner -->
+<div class="row g-4 mb-4" data-aos="fade-down">
+  <div class="col-12">
+    <div class="p-4 rounded-4 text-white shadow-sm" style="background: linear-gradient(135deg, #070d19 0%, #0369a1 100%); border: 1px solid rgba(255, 255, 255, 0.1);">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-success px-3 py-1"><i class="bi bi-broadcast me-1"></i> TELEMETRY INGESTION</span>
+            <span class="text-white-50 small"><i class="bi bi-cpu me-1"></i> SCADA Current & Potential Transformer Logs</span>
+          </div>
+          <h2 class="fw-bold mb-1">Record Electrical Measurement</h2>
+          <p class="text-white-50 mb-0">Capture manual synchrophasor readings and electrical bus metrics to evaluate grid health and trigger AI fault prediction.</p>
+        </div>
+        <div class="d-flex gap-2">
+          <a href="/operator_home" class="btn btn-outline-light btn-sm">
+            <i class="bi bi-arrow-left me-1"></i> SCADA Overview
+          </a>
+          <a href="/measurement_history" class="btn btn-info btn-sm text-dark fw-semibold">
+            <i class="bi bi-clock-history me-1"></i> View History
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Measurement Entry Form -->
+  <div class="col-lg-8" data-aos="fade-right">
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h5 class="fw-bold text-dark mb-1">Transmission Line Telemetry Entry</h5>
+          <small class="text-muted">Enter instantaneous or 1-minute averaged meter parameters</small>
+        </div>
+        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary">
+          <i class="bi bi-shield-lock me-1"></i> Manual Input Source
+        </span>
+      </div>
+
+      {% if sections %}
+        <form method="POST" action="/add_measurement" id="measurementForm">
+          {% csrf_token %}
+
+          <!-- Grid Section Selection -->
+          <div class="mb-4">
+            <label class="form-label fw-semibold text-dark">
+              Target Grid Section & Feeder Line <span class="text-danger">*</span>
+            </label>
+            <div class="input-group">
+              <span class="input-group-text bg-light text-primary"><i class="bi bi-diagram-3-fill fs-5"></i></span>
+              <select name="grid_section" id="gridSectionSelect" class="form-select form-select-lg" required onchange="updateSectionSpecs()">
+                <option value="" disabled selected>-- Select monitored grid section / feeder --</option>
+                {% for section in sections %}
+                  <option value="{{ section.id }}" 
+                          data-name="{{ section.section_name }}"
+                          data-code="{{ section.section_code }}"
+                          data-voltage="{{ section.voltage_rating }}"
+                          data-current="{{ section.current_rating }}"
+                          data-location="{{ section.location }}">
+                    {{ section.section_name }} ({{ section.section_code }}) &bull; Rated: {{ section.voltage_rating }} kV / {{ section.current_rating }} A &bull; {{ section.location }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="small text-muted mt-1" id="sectionInfoHint">
+              Select an active high-voltage transmission section to benchmark measured parameters against rated limits.
+            </div>
+          </div>
+
+          <!-- Parameter Fields -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold text-dark">
+                Measured Voltage (kV) <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-lightning-charge text-warning"></i></span>
+                <input type="number" step="any" min="0" name="voltage" id="voltageInput" class="form-control" placeholder="e.g. 399.5" required>
+                <span class="input-group-text bg-light text-muted small">kV</span>
+              </div>
+              <small class="text-muted" id="voltageHelp">Line-to-Line phase voltage</small>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold text-dark">
+                Measured Current (A) <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-speedometer text-info"></i></span>
+                <input type="number" step="any" min="0" name="current" id="currentInput" class="form-control" placeholder="e.g. 1180.0" required>
+                <span class="input-group-text bg-light text-muted small">A</span>
+              </div>
+              <small class="text-muted">Total Phase Current</small>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold text-dark">
+                Frequency (Hz) <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-activity text-primary"></i></span>
+                <input type="number" step="any" min="0.01" name="frequency" id="freqInput" class="form-control" value="50.00" placeholder="50.00" required>
+                <span class="input-group-text bg-light text-muted small">Hz</span>
+              </div>
+              <small class="text-muted">Grid frequency (Nominal 50.00 Hz)</small>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold text-dark">
+                Active Power P (MW) <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-fire text-danger"></i></span>
+                <input type="number" step="any" name="active_power" id="activePowerInput" class="form-control" placeholder="e.g. 780.5" required oninput="calcPowerFactor()">
+                <span class="input-group-text bg-light text-muted small">MW</span>
+              </div>
+              <small class="text-muted">Real electrical workload</small>
+            </div>
+
+            <div class="col-md-4">
+              <label class="form-label small fw-semibold text-dark">
+                Reactive Power Q (MVAR)
+              </label>
+              <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-arrow-repeat text-secondary"></i></span>
+                <input type="number" step="any" name="reactive_power" id="reactivePowerInput" class="form-control" placeholder="e.g. 150.0" value="0.0" oninput="calcPowerFactor()">
+                <span class="input-group-text bg-light text-muted small">MVAR</span>
+              </div>
+              <small class="text-muted">Magnetizing flux component</small>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label small fw-semibold text-dark">
+                Power Factor (cos &phi;)
+              </label>
+              <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-calculator text-dark"></i></span>
+                <input type="number" step="0.001" min="0" max="1" name="power_factor" id="powerFactorInput" class="form-control" placeholder="e.g. 0.95" value="0.95">
+              </div>
+              <small class="text-muted">Must be between 0.00 and 1.00</small>
+            </div>
+
+            <div class="col-md-6 d-flex align-items-end">
+              <button type="button" class="btn btn-outline-secondary w-100 py-2" onclick="calcPowerFactor()">
+                <i class="bi bi-magic me-1"></i> Auto-Calculate Power Factor
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Test Telemetry Presets -->
+          <div class="p-3 mb-4 rounded-3 border bg-light">
+            <div class="small fw-bold text-dark mb-2">
+              <i class="bi bi-lightning-charge-fill text-warning me-1"></i> Quick Test Scenario Presets:
+            </div>
+            <div class="d-flex flex-wrap gap-2">
+              <button type="button" class="btn btn-sm btn-outline-success" onclick="applyPreset('normal')">
+                <i class="bi bi-check-circle me-1"></i> Normal Balanced Load
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-warning" onclick="applyPreset('heavy')">
+                <i class="bi bi-exclamation-triangle me-1"></i> Heavy Peak Load
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-danger" onclick="applyPreset('fault')">
+                <i class="bi bi-slash-circle me-1"></i> High Surge Fault
+              </button>
+            </div>
+          </div>
+
+          <!-- Submit Buttons -->
+          <div class="d-flex justify-content-between align-items-center pt-2 border-top">
+            <a href="/operator_home" class="btn btn-outline-secondary">
+              Cancel
+            </a>
+            <button type="submit" class="btn btn-primary px-4 py-2 fw-semibold shadow-sm">
+              <i class="bi bi-cloud-arrow-up-fill me-1"></i> Save Electrical Measurement
+            </button>
+          </div>
+        </form>
+      {% else %}
+        <div class="text-center py-5">
+          <div class="p-4 bg-light rounded-circle d-inline-flex mb-3">
+            <i class="bi bi-exclamation-circle text-warning fs-1"></i>
+          </div>
+          <h5 class="fw-bold text-dark">No Active Grid Sections Available</h5>
+          <p class="text-muted small mx-auto" style="max-width: 450px;">
+            Before logging electrical telemetry, the System Administrator must define and activate at least one Grid Section in the Admin Console.
+          </p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Operational Guidelines & Live Gauge Card -->
+  <div class="col-lg-4" data-aos="fade-left">
+    <!-- Selected Section Specs Card -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+      <h6 class="fw-bold text-dark mb-3">
+        <i class="bi bi-info-circle-fill text-primary me-2"></i>Monitored Feeder Benchmark
+      </h6>
+      <div id="sectionSpecsPlaceholder" class="text-muted small py-2">
+        Select a grid section on the left to inspect rated capacity, nominal bus voltage, and standard trip thresholds.
+      </div>
+      <div id="sectionSpecsCard" class="d-none">
+        <div class="p-3 rounded-3 bg-light border mb-3">
+          <div class="small text-muted text-uppercase fw-semibold" id="cardSecCode">SEC-000</div>
+          <h6 class="fw-bold text-dark mb-1" id="cardSecName">Section Name</h6>
+          <small class="text-secondary"><i class="bi bi-geo-alt me-1"></i><span id="cardSecLoc">Location</span></small>
+        </div>
+        <div class="d-flex justify-content-between py-2 border-bottom small">
+          <span class="text-muted">Nominal Voltage:</span>
+          <span class="fw-bold text-primary" id="cardSecVolt">-- kV</span>
+        </div>
+        <div class="d-flex justify-content-between py-2 border-bottom small">
+          <span class="text-muted">Maximum Thermal Current:</span>
+          <span class="fw-bold text-dark" id="cardSecCurr">-- A</span>
+        </div>
+        <div class="d-flex justify-content-between py-2 small">
+          <span class="text-muted">Status:</span>
+          <span class="badge bg-success">Operational</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCADA Standards Guide -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+      <h6 class="fw-bold text-dark mb-3">
+        <i class="bi bi-shield-check text-success me-2"></i>IEEE Standard Tolerances
+      </h6>
+
+      <div class="mb-3 p-3 rounded-3 bg-light border">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <span class="small fw-semibold text-dark">Grid Frequency Band</span>
+          <span class="badge bg-primary">50.00 Hz</span>
+        </div>
+        <div class="small text-muted">Allowable limits: 49.85 Hz to 50.15 Hz. Deviations signify active power generation mismatch.</div>
+      </div>
+
+      <div class="mb-3 p-3 rounded-3 bg-light border">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <span class="small fw-semibold text-dark">Power Factor Target</span>
+          <span class="badge bg-success">&ge; 0.90</span>
+        </div>
+        <div class="small text-muted">Capacitor bank switching recommended if power factor drops below 0.85 lagging.</div>
+      </div>
+
+      <div class="p-3 rounded-3 bg-light border">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <span class="small fw-semibold text-dark">AI Classifier Trigger</span>
+          <span class="badge bg-warning text-dark">Hugging Face ML</span>
+        </div>
+        <div class="small text-muted">Saving measurements automatically enqueues inference for symmetrical, line-to-ground, and overload fault classes.</div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function updateSectionSpecs() {
+    const select = document.getElementById('gridSectionSelect');
+    const selected = select.options[select.selectedIndex];
+    if (!selected || !selected.value) return;
+
+    const name = selected.getAttribute('data-name');
+    const code = selected.getAttribute('data-code');
+    const volt = selected.getAttribute('data-voltage');
+    const curr = selected.getAttribute('data-current');
+    const loc = selected.getAttribute('data-location');
+
+    document.getElementById('sectionSpecsPlaceholder').classList.add('d-none');
+    const card = document.getElementById('sectionSpecsCard');
+    card.classList.remove('d-none');
+
+    document.getElementById('cardSecCode').innerText = code;
+    document.getElementById('cardSecName').innerText = name;
+    document.getElementById('cardSecLoc').innerText = loc;
+    document.getElementById('cardSecVolt').innerText = volt + ' kV';
+    document.getElementById('cardSecCurr').innerText = curr + ' A';
+
+    // Auto populate nominal voltage if empty
+    const voltInput = document.getElementById('voltageInput');
+    if (!voltInput.value) {
+      voltInput.value = volt;
+    }
+  }
+
+  function calcPowerFactor() {
+    const p = parseFloat(document.getElementById('activePowerInput').value);
+    const q = parseFloat(document.getElementById('reactivePowerInput').value || 0);
+    if (!isNaN(p) && p > 0 && !isNaN(q)) {
+      const s = Math.sqrt(p * p + q * q);
+      if (s > 0) {
+        const pf = (p / s).toFixed(3);
+        document.getElementById('powerFactorInput').value = pf;
+      }
+    }
+  }
+
+  function applyPreset(type) {
+    const select = document.getElementById('gridSectionSelect');
+    if (!select.value && select.options.length > 1) {
+      select.selectedIndex = 1;
+      updateSectionSpecs();
+    }
+    const selected = select.options[select.selectedIndex];
+    const ratedV = selected ? parseFloat(selected.getAttribute('data-voltage')) || 400.0 : 400.0;
+    const ratedI = selected ? parseFloat(selected.getAttribute('data-current')) || 1200.0 : 1200.0;
+
+    if (type === 'normal') {
+      document.getElementById('voltageInput').value = (ratedV * 0.998).toFixed(1);
+      document.getElementById('currentInput').value = (ratedI * 0.72).toFixed(1);
+      document.getElementById('freqInput').value = "50.02";
+      document.getElementById('activePowerInput').value = (ratedV * ratedI * 0.001732 * 0.95 * 0.72).toFixed(1);
+      document.getElementById('reactivePowerInput').value = "45.0";
+      document.getElementById('powerFactorInput').value = "0.96";
+    } else if (type === 'heavy') {
+      document.getElementById('voltageInput').value = (ratedV * 0.965).toFixed(1);
+      document.getElementById('currentInput').value = (ratedI * 1.05).toFixed(1);
+      document.getElementById('freqInput').value = "49.88";
+      document.getElementById('activePowerInput').value = (ratedV * ratedI * 0.001732 * 0.90).toFixed(1);
+      document.getElementById('reactivePowerInput').value = "120.0";
+      document.getElementById('powerFactorInput').value = "0.89";
+    } else if (type === 'fault') {
+      document.getElementById('voltageInput').value = (ratedV * 0.72).toFixed(1);
+      document.getElementById('currentInput').value = (ratedI * 2.8).toFixed(1);
+      document.getElementById('freqInput').value = "48.95";
+      document.getElementById('activePowerInput').value = (ratedV * ratedI * 0.001732 * 0.55).toFixed(1);
+      document.getElementById('reactivePowerInput').value = "380.0";
+      document.getElementById('powerFactorInput').value = "0.62";
+    }
+  }
+</script>
+{% endblock %}
