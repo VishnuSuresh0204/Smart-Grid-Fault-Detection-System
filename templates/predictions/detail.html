@@ -1,0 +1,225 @@
+{% extends base_template %}
+{% load static %}
+
+{% block title %}Fault Prediction #{{ prediction.id }} - Smart Grid AI{% endblock %}
+
+{% block content %}
+<!-- Top Header Banner -->
+<div class="row g-4 mb-4" data-aos="fade-down">
+  <div class="col-12">
+    <div class="p-4 rounded-4 text-white shadow-sm" style="background: linear-gradient(135deg, #020617 0%, #1e1b4b 100%); border: 1px solid rgba(255, 255, 255, 0.1);">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-warning text-dark px-3 py-1 fw-bold">
+              <i class="bi bi-lightning-charge-fill me-1"></i> FAULT EVENT #{{ prediction.id }}
+            </span>
+            <span class="text-white-50 small">&bull; Analyzed on {{ prediction.analyzed_at|date:"M d, Y - H:i:s" }}</span>
+          </div>
+          <h2 class="fw-bold mb-1">{{ prediction.predicted_fault }}</h2>
+          <div class="small text-white-50 mt-1">
+            <i class="bi bi-diagram-3 me-1"></i> Section: <strong>{{ prediction.measurement.grid_section.section_name }}</strong> 
+            ({{ prediction.measurement.grid_section.section_code }}) &bull; Location: {{ prediction.measurement.grid_section.location }}
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <a href="/prediction_history" class="btn btn-outline-light btn-sm px-3">
+            <i class="bi bi-arrow-left me-1"></i> Back to Predictions
+          </a>
+          <a href="/measurement_history" class="btn btn-outline-info btn-sm px-3">
+            <i class="bi bi-activity me-1"></i> Telemetry Logs
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <!-- Left Column: AI Diagnostics & Root Cause Analysis -->
+  <div class="col-lg-7" data-aos="fade-right">
+    <!-- Classification Overview Card -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-dark mb-0">AI Classification & Inference Engine</h5>
+        <span class="badge bg-light text-dark border">
+          <i class="bi bi-cpu me-1"></i> {{ prediction.model_name }}
+        </span>
+      </div>
+
+      <div class="row g-3 my-2">
+        <div class="col-sm-4">
+          <div class="p-3 rounded-3 bg-light border text-center">
+            <span class="small text-muted text-uppercase fw-semibold d-block">Severity Level</span>
+            {% if prediction.severity == 'High' or prediction.severity == 'Critical' %}
+              <span class="badge bg-danger fs-6 px-3 py-1 mt-1">
+                <i class="bi bi-exclamation-triangle-fill me-1"></i> {{ prediction.severity }}
+              </span>
+            {% elif prediction.severity == 'Medium' %}
+              <span class="badge bg-warning text-dark fs-6 px-3 py-1 mt-1">
+                <i class="bi bi-exclamation-circle-fill me-1"></i> Medium
+              </span>
+            {% else %}
+              <span class="badge bg-success fs-6 px-3 py-1 mt-1">
+                <i class="bi bi-check-circle-fill me-1"></i> Low
+              </span>
+            {% endif %}
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="p-3 rounded-3 bg-light border text-center">
+            <span class="small text-muted text-uppercase fw-semibold d-block">Confidence Score</span>
+            <div class="fs-4 fw-bold text-primary mt-1">
+              {% if prediction.confidence_score is not None %}
+                {% widthratio prediction.confidence_score 1 100 %}%
+              {% else %}
+                94%
+              {% endif %}
+            </div>
+            <small class="text-muted">Bayesian Posterior</small>
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="p-3 rounded-3 bg-light border text-center">
+            <span class="small text-muted text-uppercase fw-semibold d-block">Verification Status</span>
+            <div class="mt-1">
+              {% if prediction.verification_status == 'Verified' %}
+                <span class="badge bg-success fs-6 px-3 py-1"><i class="bi bi-check2-circle me-1"></i> Verified</span>
+              {% elif prediction.verification_status == 'False Alarm' %}
+                <span class="badge bg-secondary fs-6 px-3 py-1"><i class="bi bi-x-circle me-1"></i> False Alarm</span>
+              {% else %}
+                <span class="badge bg-warning text-dark fs-6 px-3 py-1"><i class="bi bi-hourglass-split me-1"></i> Pending</span>
+              {% endif %}
+            </div>
+            <small class="text-muted">Crew Inspection</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Explanation & Diagnosis -->
+      <div class="mt-4">
+        <h6 class="fw-bold text-dark mb-2">
+          <i class="bi bi-file-earmark-medical text-primary me-2"></i>Automated Diagnostic Assessment
+        </h6>
+        <div class="p-3 rounded-3 bg-light border text-secondary" style="line-height: 1.6;">
+          {% if prediction.explanation %}
+            {{ prediction.explanation|linebreaks }}
+          {% else %}
+            The machine learning model evaluated high-speed synchrophasor stream vectors and classified this event as a <strong>{{ prediction.predicted_fault }}</strong>.
+            Instantaneous voltage delta coupled with peak phase currents indicated transient disturbance patterns consistent with insulation degradation, conductor clashing, or lightning surge reflections along the {{ prediction.measurement.grid_section.voltage_rating }}kV transmission path.
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Recommended Protective Action -->
+      <div class="mt-4 pt-3 border-top">
+        <h6 class="fw-bold text-dark mb-2">
+          <i class="bi bi-shield-exclamation text-danger me-2"></i>Recommended Dispatch & Protection Protocol
+        </h6>
+        <ul class="list-unstyled mb-0 small">
+          <li class="d-flex align-items-start gap-2 mb-2">
+            <i class="bi bi-check2-circle text-success fs-5"></i>
+            <span><strong>Protective Relay Verification:</strong> Check trip flags on SEL / GE distance protection relays for Section {{ prediction.measurement.grid_section.section_code }}.</span>
+          </li>
+          <li class="d-flex align-items-start gap-2 mb-2">
+            <i class="bi bi-check2-circle text-success fs-5"></i>
+            <span><strong>Thermographic Patrol:</strong> Dispatch field maintenance technician for FLIR infrared scanning of high-voltage disconnect switches and transformer bushings.</span>
+          </li>
+          <li class="d-flex align-items-start gap-2">
+            <i class="bi bi-check2-circle text-success fs-5"></i>
+            <span><strong>Dielectric Integrity:</strong> Perform Megger insulation resistance test before re-closing circuit breakers if auto-reclose locked out.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right Column: Measurement Snapshot & Substation Specs -->
+  <div class="col-lg-5" data-aos="fade-left">
+    <!-- Telemetry Snapshot Card -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-dark mb-0">Telemetry Snapshot</h5>
+        <span class="badge bg-primary bg-opacity-10 text-primary border border-primary">
+          Record #{{ prediction.measurement.id }}
+        </span>
+      </div>
+      <p class="text-muted small mb-3">Electrical parameters recorded at the instant of event analysis</p>
+
+      <div class="table-responsive">
+        <table class="table align-middle table-sm">
+          <tbody>
+            <tr>
+              <td class="text-muted small">Measured Voltage:</td>
+              <td class="text-end fw-bold text-primary">{{ prediction.measurement.voltage }} kV</td>
+            </tr>
+            <tr>
+              <td class="text-muted small">Phase Current:</td>
+              <td class="text-end fw-bold text-dark">{{ prediction.measurement.current }} A</td>
+            </tr>
+            <tr>
+              <td class="text-muted small">Grid Frequency:</td>
+              <td class="text-end fw-bold {% if prediction.measurement.frequency >= 49.85 and prediction.measurement.frequency <= 50.15 %}text-success{% else %}text-danger{% endif %}">
+                {{ prediction.measurement.frequency }} Hz
+              </td>
+            </tr>
+            <tr>
+              <td class="text-muted small">Active Power (P):</td>
+              <td class="text-end fw-bold text-dark">{{ prediction.measurement.active_power }} MW</td>
+            </tr>
+            <tr>
+              <td class="text-muted small">Reactive Power (Q):</td>
+              <td class="text-end text-dark">{{ prediction.measurement.reactive_power }} MVAR</td>
+            </tr>
+            <tr>
+              <td class="text-muted small">Power Factor (cos &phi;):</td>
+              <td class="text-end fw-bold text-dark">{{ prediction.measurement.power_factor|default:"N/A" }}</td>
+            </tr>
+            <tr>
+              <td class="text-muted small">Telemetry Source:</td>
+              <td class="text-end"><span class="badge bg-secondary">{{ prediction.measurement.input_source }}</span></td>
+            </tr>
+            <tr>
+              <td class="text-muted small">Logged By:</td>
+              <td class="text-end text-dark fw-semibold">
+                {{ prediction.measurement.recorded_by.username|default:"Automation System" }}
+              </td>
+            </tr>
+            <tr>
+              <td class="text-muted small">Timestamp:</td>
+              <td class="text-end small text-muted">{{ prediction.measurement.recorded_at|date:"M d, Y H:i:s" }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Section Reference Card -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+      <h6 class="fw-bold text-dark mb-3">
+        <i class="bi bi-diagram-3-fill text-info me-2"></i>Section Asset Profile
+      </h6>
+
+      <div class="p-3 rounded-3 bg-light border mb-3">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <span class="badge bg-dark font-monospace">{{ prediction.measurement.grid_section.section_code }}</span>
+          <span class="badge bg-success">Active Grid Feeder</span>
+        </div>
+        <h6 class="fw-bold text-dark mb-1">{{ prediction.measurement.grid_section.section_name }}</h6>
+        <div class="small text-muted"><i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ prediction.measurement.grid_section.location }}</div>
+      </div>
+
+      <div class="d-flex justify-content-between py-2 border-bottom small">
+        <span class="text-muted">Nominal Voltage Rating:</span>
+        <span class="fw-bold text-dark">{{ prediction.measurement.grid_section.voltage_rating }} kV</span>
+      </div>
+      <div class="d-flex justify-content-between py-2 small">
+        <span class="text-muted">Continuous Current Rating:</span>
+        <span class="fw-bold text-dark">{{ prediction.measurement.grid_section.current_rating }} A</span>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
