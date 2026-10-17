@@ -16,12 +16,21 @@
           <h2 class="fw-bold mb-1">Central Administration Hub</h2>
           <p class="text-secondary mb-0">Overview of registered grid personnel, substation telemetry streams, and fault protection relays.</p>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-wrap gap-2">
+          <a href="/manage_grid_sections" class="btn btn-primary">
+            <i class="bi bi-diagram-3-fill me-1"></i> Grid Sections
+          </a>
           <a href="/view_operators" class="btn btn-outline-info">
-            <i class="bi bi-person-badge me-1"></i> Operators Roster
+            <i class="bi bi-person-badge me-1"></i> Operators
           </a>
           <a href="/view_technicians" class="btn btn-outline-success">
-            <i class="bi bi-tools me-1"></i> Technicians Roster
+            <i class="bi bi-tools me-1"></i> Technicians
+          </a>
+          <a href="/measurement_history" class="btn btn-outline-light">
+            <i class="bi bi-activity me-1"></i> Measurements
+          </a>
+          <a href="/prediction_history" class="btn btn-warning text-dark fw-semibold">
+            <i class="bi bi-lightning-charge-fill me-1"></i> Fault Predictions
           </a>
         </div>
       </div>
@@ -30,67 +39,83 @@
 </div>
 
 <!-- Metrics Row -->
-<div class="row g-4 mb-4">
-  <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="100">
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-xl" data-aos="fade-up" data-aos-delay="100">
     <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
-      <div class="d-flex align-items-center justify-content-between mb-3">
-        <span class="text-secondary small fw-semibold text-uppercase">Grid Operators</span>
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-secondary small fw-semibold text-uppercase">Grid Sections</span>
         <div class="p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
-          <i class="bi bi-person-badge-fill fs-4"></i>
+          <i class="bi bi-diagram-3-fill fs-5"></i>
         </div>
       </div>
-      <div class="fs-2 fw-bold text-dark mb-1">{{ total_operators }}</div>
+      <div class="fs-2 fw-bold text-dark mb-1">{{ total_grid_sections }}</div>
       <div class="d-flex justify-content-between align-items-center">
-        <span class="small text-muted">Active in Control Rooms</span>
-        <a href="/view_operators" class="small text-primary fw-semibold text-decoration-none">View All &rarr;</a>
+        <span class="small text-muted">Transmission zones</span>
+        <a href="/manage_grid_sections" class="small text-primary fw-semibold text-decoration-none">Manage &rarr;</a>
       </div>
     </div>
   </div>
 
-  <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="200">
+  <div class="col-sm-6 col-xl" data-aos="fade-up" data-aos-delay="150">
     <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
-      <div class="d-flex align-items-center justify-content-between mb-3">
-        <span class="text-secondary small fw-semibold text-uppercase">Field Technicians</span>
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-secondary small fw-semibold text-uppercase">Grid Operators</span>
+        <div class="p-2 rounded-3 bg-info bg-opacity-10 text-info">
+          <i class="bi bi-person-badge-fill fs-5"></i>
+        </div>
+      </div>
+      <div class="fs-2 fw-bold text-dark mb-1">{{ total_operators }}</div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="small text-muted">Control desk roster</span>
+        <a href="/view_operators" class="small text-info fw-semibold text-decoration-none">View All &rarr;</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl" data-aos="fade-up" data-aos-delay="200">
+    <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-secondary small fw-semibold text-uppercase">Technicians</span>
         <div class="p-2 rounded-3 bg-success bg-opacity-10 text-success">
-          <i class="bi bi-tools fs-4"></i>
+          <i class="bi bi-tools fs-5"></i>
         </div>
       </div>
       <div class="fs-2 fw-bold text-dark mb-1">{{ total_technicians }}</div>
       <div class="d-flex justify-content-between align-items-center">
-        <span class="small text-muted">Maintenance & Rapid Response</span>
+        <span class="small text-muted">Field response crew</span>
         <a href="/view_technicians" class="small text-success fw-semibold text-decoration-none">View All &rarr;</a>
       </div>
     </div>
   </div>
 
-  <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="300">
+  <div class="col-sm-6 col-xl" data-aos="fade-up" data-aos-delay="250">
     <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
-      <div class="d-flex align-items-center justify-content-between mb-3">
-        <span class="text-secondary small fw-semibold text-uppercase">Active Substations</span>
-        <div class="p-2 rounded-3 bg-info bg-opacity-10 text-info">
-          <i class="bi bi-diagram-3-fill fs-4"></i>
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-secondary small fw-semibold text-uppercase">Measurements</span>
+        <div class="p-2 rounded-3 bg-secondary bg-opacity-10 text-secondary">
+          <i class="bi bi-activity fs-5"></i>
         </div>
       </div>
-      <div class="fs-2 fw-bold text-dark mb-1">24</div>
+      <div class="fs-2 fw-bold text-dark mb-1">{{ total_measurements }}</div>
       <div class="d-flex justify-content-between align-items-center">
-        <span class="small text-success"><i class="bi bi-check-circle-fill me-1"></i> 100% Synced</span>
-        <span class="small text-muted">400kV / 220kV</span>
+        <span class="small text-muted">Recorded logs</span>
+        <a href="/measurement_history" class="small text-secondary fw-semibold text-decoration-none">History &rarr;</a>
       </div>
     </div>
   </div>
 
-  <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="400">
+  <div class="col-sm-6 col-xl" data-aos="fade-up" data-aos-delay="300">
     <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
-      <div class="d-flex align-items-center justify-content-between mb-3">
-        <span class="text-secondary small fw-semibold text-uppercase">Fault Tripping Speed</span>
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-secondary small fw-semibold text-uppercase">Fault Predictions</span>
         <div class="p-2 rounded-3 bg-warning bg-opacity-10 text-warning">
-          <i class="bi bi-lightning-charge-fill fs-4"></i>
+          <i class="bi bi-lightning-charge-fill fs-5"></i>
         </div>
       </div>
-      <div class="fs-2 fw-bold text-dark mb-1">32 <small class="fs-6">ms</small></div>
+      <div class="fs-2 fw-bold text-dark mb-1">{{ total_predictions }}</div>
       <div class="d-flex justify-content-between align-items-center">
-        <span class="small text-success"><i class="bi bi-shield-check me-1"></i> Standard Compliant</span>
-        <span class="small text-muted">IEEE Std</span>
+        <span class="small text-muted">AI detected events</span>
+        <a href="/prediction_history" class="small text-warning fw-semibold text-decoration-none">Review &rarr;</a>
       </div>
     </div>
   </div>
@@ -112,6 +137,21 @@
       <div class="p-3 mb-3 rounded-3 border bg-light d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center gap-3">
           <div class="p-3 bg-primary text-white rounded-3">
+            <i class="bi bi-diagram-3 fs-4"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold mb-1">Grid Sections & Feeder Network</h6>
+            <div class="small text-muted">Configured lines & substations: <strong>{{ total_grid_sections }} sections</strong></div>
+          </div>
+        </div>
+        <a href="/manage_grid_sections" class="btn btn-sm btn-primary">
+          <i class="bi bi-gear-fill me-1"></i> Manage
+        </a>
+      </div>
+
+      <div class="p-3 mb-3 rounded-3 border bg-light d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <div class="p-3 bg-info text-white rounded-3">
             <i class="bi bi-person-badge fs-4"></i>
           </div>
           <div>
