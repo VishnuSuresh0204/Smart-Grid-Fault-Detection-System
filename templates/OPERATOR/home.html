@@ -252,7 +252,7 @@
                   </td>
                   <td>
                     {% if p.confidence_score is not None %}
-                      <span class="small fw-bold">{% widthratio p.confidence_score 1 100 %}%</span>
+                      <span class="small fw-bold">{{ p.confidence_score|floatformat:1 }}%</span>
                     {% else %}
                       <span class="text-muted small">N/A</span>
                     {% endif %}
