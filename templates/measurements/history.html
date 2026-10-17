@@ -1,0 +1,230 @@
+{% extends base_template %}
+{% load static %}
+
+{% block title %}Electrical Measurements History - Smart Grid AI{% endblock %}
+
+{% block content %}
+<!-- Page Header Banner -->
+<div class="row g-4 mb-4" data-aos="fade-down">
+  <div class="col-12">
+    <div class="p-4 rounded-4 text-white shadow-sm" style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border: 1px solid rgba(255, 255, 255, 0.1);">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+        <div>
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="badge bg-primary px-3 py-1"><i class="bi bi-activity me-1"></i> TELEMETRY ARCHIVE</span>
+            <span class="text-white-50 small"><i class="bi bi-clock-history me-1"></i> Synchrophasor Measurements & Bus Logs</span>
+          </div>
+          <h2 class="fw-bold mb-1">Electrical Measurement History</h2>
+          <p class="text-secondary mb-0">
+            {% if user_role == 'Grid Operator' %}
+              Review your recorded voltage, current, power factor, and frequency readings across monitored transmission sections.
+            {% else %}
+              Central repository of electrical parameters recorded by grid operators across all transmission feeders and bus sections.
+            {% endif %}
+          </p>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+          {% if user_role == 'Grid Operator' %}
+            <a href="/add_measurement" class="btn btn-primary btn-sm px-3 fw-semibold">
+              <i class="bi bi-plus-circle-fill me-1"></i> Record New Reading
+            </a>
+          {% elif user_role == 'Admin' %}
+            <a href="/manage_grid_sections" class="btn btn-primary btn-sm px-3 fw-semibold">
+              <i class="bi bi-diagram-3-fill me-1"></i> Grid Sections
+            </a>
+          {% endif %}
+          <a href="/prediction_history" class="btn btn-warning btn-sm text-dark px-3 fw-semibold">
+            <i class="bi bi-lightning-charge-fill me-1"></i> Fault Predictions
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Quick Statistics -->
+<div class="row g-3 mb-4">
+  <div class="col-sm-4" data-aos="fade-up" data-aos-delay="100">
+    <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <span class="text-muted small text-uppercase fw-semibold">Total Records</span>
+          <h3 class="fw-bold text-dark mt-1 mb-0">{{ measurements|length }}</h3>
+        </div>
+        <div class="p-3 bg-primary bg-opacity-10 text-primary rounded-3">
+          <i class="bi bi-database-fill-check fs-4"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-4" data-aos="fade-up" data-aos-delay="150">
+    <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <span class="text-muted small text-uppercase fw-semibold">Telemetry Feed</span>
+          <h3 class="fw-bold text-success mt-1 mb-0">Online</h3>
+        </div>
+        <div class="p-3 bg-success bg-opacity-10 text-success rounded-3">
+          <i class="bi bi-broadcast fs-4"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-4" data-aos="fade-up" data-aos-delay="200">
+    <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <span class="text-muted small text-uppercase fw-semibold">Sampling Standard</span>
+          <h3 class="fw-bold text-info mt-1 mb-0">IEEE C37.118</h3>
+        </div>
+        <div class="p-3 bg-info bg-opacity-10 text-info rounded-3">
+          <i class="bi bi-shield-check fs-4"></i>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Telemetry Table Card -->
+<div class="card border-0 shadow-sm rounded-4 p-4 bg-white" data-aos="fade-up">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+      <h5 class="fw-bold text-dark mb-1">Recorded Electrical Measurements</h5>
+      <small class="text-muted">High-precision voltage, current, frequency, and active/reactive power logs</small>
+    </div>
+    <div class="d-flex align-items-center gap-2">
+      <div class="input-group input-group-sm" style="min-width: 250px;">
+        <span class="input-group-text bg-light text-muted"><i class="bi bi-search"></i></span>
+        <input type="text" id="measurementSearchInput" class="form-control" placeholder="Search section, operator, date..." onkeyup="filterMeasurementsTable()">
+      </div>
+      <span class="badge bg-light text-dark border">{{ measurements|length }} Total</span>
+    </div>
+  </div>
+
+  {% if measurements %}
+    <div class="table-responsive">
+      <table class="table align-middle table-hover" id="measurementsTable">
+        <thead class="table-light">
+          <tr>
+            <th>ID / Section</th>
+            <th>Voltage & Current</th>
+            <th>Frequency</th>
+            <th>Active & Reactive Power</th>
+            <th>Power Factor</th>
+            <th>Source</th>
+            <th>Recorded By</th>
+            <th>Timestamp</th>
+            <th class="text-end">AI Analysis</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for m in measurements %}
+            <tr>
+              <td>
+                <div class="fw-bold text-dark">{{ m.grid_section.section_name }}</div>
+                <div class="d-flex align-items-center gap-1 mt-1">
+                  <span class="badge bg-dark font-monospace text-uppercase" style="font-size: 0.72rem;">{{ m.grid_section.section_code }}</span>
+                  <small class="text-muted">&bull; {{ m.grid_section.location }}</small>
+                </div>
+              </td>
+              <td>
+                <span class="badge bg-primary bg-opacity-10 text-primary border border-primary px-2 py-1">
+                  <i class="bi bi-lightning-charge me-1"></i>{{ m.voltage }} kV
+                </span>
+                <div class="small text-muted mt-1">
+                  <i class="bi bi-speedometer2 me-1"></i>{{ m.current }} A
+                </div>
+              </td>
+              <td>
+                <span class="badge {% if m.frequency >= 49.85 and m.frequency <= 50.15 %}bg-success bg-opacity-10 text-success border border-success{% else %}bg-danger bg-opacity-10 text-danger border border-danger{% endif %}">
+                  {{ m.frequency }} Hz
+                </span>
+                <div class="small text-muted mt-1">
+                  {% if m.frequency >= 49.85 and m.frequency <= 50.15 %}
+                    <i class="bi bi-check-circle text-success me-1"></i>Synchronous
+                  {% else %}
+                    <i class="bi bi-exclamation-triangle text-danger me-1"></i>Deviating
+                  {% endif %}
+                </div>
+              </td>
+              <td>
+                <div class="fw-semibold text-dark">{{ m.active_power }} MW</div>
+                <div class="small text-muted">{{ m.reactive_power }} MVAR</div>
+              </td>
+              <td>
+                {% if m.power_factor is not None %}
+                  <div class="fw-bold {% if m.power_factor >= 0.90 %}text-success{% elif m.power_factor >= 0.80 %}text-warning{% else %}text-danger{% endif %}">
+                    {{ m.power_factor|floatformat:3 }}
+                  </div>
+                  <small class="text-muted">cos &phi;</small>
+                {% else %}
+                  <span class="text-muted small">N/A</span>
+                {% endif %}
+              </td>
+              <td>
+                <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary">
+                  {{ m.input_source }}
+                </span>
+              </td>
+              <td>
+                {% if m.recorded_by %}
+                  <div class="small fw-semibold text-dark">
+                    <i class="bi bi-person-fill text-info me-1"></i>{{ m.recorded_by.username }}
+                  </div>
+                {% else %}
+                  <span class="text-muted small">SCADA Automation</span>
+                {% endif %}
+              </td>
+              <td class="small text-muted">
+                {{ m.recorded_at|date:"M d, Y" }}<br>
+                <span class="text-secondary">{{ m.recorded_at|date:"H:i:s" }}</span>
+              </td>
+              <td class="text-end">
+                {% if m.predictions.exists %}
+                  {% with pred=m.predictions.first %}
+                    <a href="/prediction_detail/{{ pred.id }}" class="btn btn-sm btn-outline-warning py-1" title="View AI Prediction">
+                      <i class="bi bi-eye-fill me-1"></i> {{ pred.predicted_fault }}
+                    </a>
+                  {% endwith %}
+                {% else %}
+                  <span class="badge bg-light text-muted border">No Fault</span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="text-center py-5">
+      <div class="p-4 bg-light rounded-circle d-inline-flex mb-3">
+        <i class="bi bi-activity text-muted" style="font-size: 3rem;"></i>
+      </div>
+      <h5 class="fw-bold text-dark">No Measurements Recorded Yet</h5>
+      <p class="text-muted small mx-auto mb-3" style="max-width: 420px;">
+        There are no electrical measurement logs found in the database.
+      </p>
+      {% if user_role == 'Grid Operator' %}
+        <a href="/add_measurement" class="btn btn-primary btn-sm px-4">
+          <i class="bi bi-plus-lg me-1"></i> Record First Reading
+        </a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  function filterMeasurementsTable() {
+    const query = document.getElementById('measurementSearchInput').value.toLowerCase();
+    const rows = document.querySelectorAll('#measurementsTable tbody tr');
+    rows.forEach(row => {
+      const text = row.innerText.toLowerCase();
+      row.style.display = text.includes(query) ? '' : 'none';
+    });
+  }
+</script>
+{% endblock %}
