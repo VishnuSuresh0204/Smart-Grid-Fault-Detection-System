@@ -58,4 +58,14 @@ path('', views.home, name='home'),
     # Fault Predictions
     path('prediction_history', views.prediction_history, name='prediction_history'),
     path('prediction_detail/<int:prediction_id>', views.prediction_detail, name='prediction_detail'),
+
+    # Fault Alerts
+    path('fault_alert_history', views.fault_alert_history, name='fault_alert_history'),
+    path('acknowledge_fault_alert/<int:alert_id>', views.acknowledge_fault_alert, name='acknowledge_fault_alert'),
+    path('resolve_fault_alert/<int:alert_id>', views.resolve_fault_alert, name='resolve_fault_alert'),
+
+    # Maintenance Management
+    path('assign_maintenance', views.assign_maintenance, name='assign_maintenance'),
+    path('maintenance_records', views.maintenance_records, name='maintenance_records'),
+    path('update_maintenance_status/<int:record_id>', views.update_maintenance_status, name='update_maintenance_status'),
 ]
