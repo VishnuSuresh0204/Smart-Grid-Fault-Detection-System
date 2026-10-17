@@ -30,7 +30,18 @@
             <i class="bi bi-activity me-1"></i> Measurements
           </a>
           <a href="/prediction_history" class="btn btn-warning text-dark fw-semibold">
-            <i class="bi bi-lightning-charge-fill me-1"></i> Fault Predictions
+            <i class="bi bi-lightning-charge-fill me-1"></i> Predictions
+          </a>
+          <a href="/fault_alert_history" class="btn btn-danger position-relative fw-semibold">
+            <i class="bi bi-bell-fill me-1"></i> Alerts
+            {% if new_alerts %}
+              <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark border border-white">
+                {{ new_alerts }}
+              </span>
+            {% endif %}
+          </a>
+          <a href="/maintenance_records" class="btn btn-info text-dark fw-semibold">
+            <i class="bi bi-clipboard2-check-fill me-1"></i> Maintenance
           </a>
         </div>
       </div>
@@ -38,10 +49,10 @@
   </div>
 </div>
 
-<!-- Metrics Row -->
-<div class="row g-3 mb-4">
+<!-- Metrics Row 1: System & Telemetry -->
+<div class="row g-3 mb-3">
   <div class="col-sm-6 col-xl" data-aos="fade-up" data-aos-delay="100">
-    <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+    <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
       <div class="d-flex align-items-center justify-content-between mb-2">
         <span class="text-secondary small fw-semibold text-uppercase">Grid Sections</span>
         <div class="p-2 rounded-3 bg-primary bg-opacity-10 text-primary">
@@ -57,7 +68,7 @@
   </div>
 
   <div class="col-sm-6 col-xl" data-aos="fade-up" data-aos-delay="150">
-    <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+    <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
       <div class="d-flex align-items-center justify-content-between mb-2">
         <span class="text-secondary small fw-semibold text-uppercase">Grid Operators</span>
         <div class="p-2 rounded-3 bg-info bg-opacity-10 text-info">
@@ -73,7 +84,7 @@
   </div>
 
   <div class="col-sm-6 col-xl" data-aos="fade-up" data-aos-delay="200">
-    <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+    <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
       <div class="d-flex align-items-center justify-content-between mb-2">
         <span class="text-secondary small fw-semibold text-uppercase">Technicians</span>
         <div class="p-2 rounded-3 bg-success bg-opacity-10 text-success">
@@ -89,7 +100,7 @@
   </div>
 
   <div class="col-sm-6 col-xl" data-aos="fade-up" data-aos-delay="250">
-    <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+    <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
       <div class="d-flex align-items-center justify-content-between mb-2">
         <span class="text-secondary small fw-semibold text-uppercase">Measurements</span>
         <div class="p-2 rounded-3 bg-secondary bg-opacity-10 text-secondary">
@@ -105,9 +116,9 @@
   </div>
 
   <div class="col-sm-6 col-xl" data-aos="fade-up" data-aos-delay="300">
-    <div class="card border-0 shadow-sm rounded-4 h-100 p-3">
+    <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
       <div class="d-flex align-items-center justify-content-between mb-2">
-        <span class="text-secondary small fw-semibold text-uppercase">Fault Predictions</span>
+        <span class="text-secondary small fw-semibold text-uppercase">Predictions</span>
         <div class="p-2 rounded-3 bg-warning bg-opacity-10 text-warning">
           <i class="bi bi-lightning-charge-fill fs-5"></i>
         </div>
@@ -121,6 +132,78 @@
   </div>
 </div>
 
+<!-- Metrics Row 2: Alerts & Field Maintenance Tasks -->
+<div class="row g-3 mb-4">
+  <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="100">
+    <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white border-start border-4 border-danger">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-secondary small fw-semibold text-uppercase">Active Fault Alerts</span>
+        <div class="p-2 rounded-3 bg-danger bg-opacity-10 text-danger">
+          <i class="bi bi-bell-fill fs-5"></i>
+        </div>
+      </div>
+      <div class="d-flex align-items-baseline gap-2 mb-1">
+        <div class="fs-2 fw-bold text-danger">{{ total_alerts }}</div>
+        {% if new_alerts %}
+          <span class="badge bg-danger">{{ new_alerts }} New</span>
+        {% endif %}
+      </div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="small text-muted">Protective relay trip</span>
+        <a href="/fault_alert_history" class="small text-danger fw-semibold text-decoration-none">View Alerts &rarr;</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="150">
+    <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white border-start border-4 border-warning">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-secondary small fw-semibold text-uppercase">Open Work Orders</span>
+        <div class="p-2 rounded-3 bg-warning bg-opacity-10 text-warning">
+          <i class="bi bi-hourglass-split fs-5"></i>
+        </div>
+      </div>
+      <div class="fs-2 fw-bold text-dark mb-1">{{ open_maintenance }}</div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="small text-muted">Awaiting dispatch</span>
+        <a href="/assign_maintenance" class="small text-warning fw-semibold text-decoration-none">Assign Task &rarr;</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="200">
+    <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white border-start border-4 border-info">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-secondary small fw-semibold text-uppercase">In Progress Tasks</span>
+        <div class="p-2 rounded-3 bg-info bg-opacity-10 text-info">
+          <i class="bi bi-gear-wide-connected fs-5"></i>
+        </div>
+      </div>
+      <div class="fs-2 fw-bold text-dark mb-1">{{ in_progress_maintenance }}</div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="small text-muted">Field crews active</span>
+        <a href="/maintenance_records" class="small text-info fw-semibold text-decoration-none">Monitor &rarr;</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="250">
+    <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white border-start border-4 border-success">
+      <div class="d-flex align-items-center justify-content-between mb-2">
+        <span class="text-secondary small fw-semibold text-uppercase">Resolved & Closed</span>
+        <div class="p-2 rounded-3 bg-success bg-opacity-10 text-success">
+          <i class="bi bi-check2-circle fs-5"></i>
+        </div>
+      </div>
+      <div class="fs-2 fw-bold text-success mb-1">{{ completed_maintenance }}</div>
+      <div class="d-flex justify-content-between align-items-center">
+        <span class="small text-muted">Repairs completed</span>
+        <a href="/maintenance_records" class="small text-success fw-semibold text-decoration-none">Audit Logs &rarr;</a>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- Main Panels -->
 <div class="row g-4">
   <!-- Personnel Quick Access Cards -->
@@ -128,15 +211,50 @@
     <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
       <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-          <h5 class="fw-bold mb-1 text-dark">Grid Personnel Directory</h5>
-          <small class="text-muted">Manage authenticated operators and field response crew</small>
+          <h5 class="fw-bold mb-1 text-dark">Grid Control & Dispatch Operations</h5>
+          <small class="text-muted">Direct management of personnel, protection alerts, and maintenance tasks</small>
         </div>
-        <span class="badge bg-light text-dark border">Database Live</span>
+        <span class="badge bg-light text-dark border">Central Console</span>
+      </div>
+
+      <div class="p-3 mb-3 rounded-3 border bg-light d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <div class="p-3 bg-danger text-white rounded-3">
+            <i class="bi bi-bell fs-4"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold mb-1">Fault Alert Emergency Center</h6>
+            <div class="small text-muted"><strong>{{ new_alerts }} new alerts</strong> &bull; Total: {{ total_alerts }} alerts logged</div>
+          </div>
+        </div>
+        <a href="/fault_alert_history" class="btn btn-sm btn-danger">
+          <i class="bi bi-shield-exclamation me-1"></i> Review Alerts
+        </a>
       </div>
 
       <div class="p-3 mb-3 rounded-3 border bg-light d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center gap-3">
           <div class="p-3 bg-primary text-white rounded-3">
+            <i class="bi bi-clipboard2-check fs-4"></i>
+          </div>
+          <div>
+            <h6 class="fw-bold mb-1">Maintenance & Field Repair Dispatch</h6>
+            <div class="small text-muted">Assign work orders to certified technicians: <strong>{{ open_maintenance }} open</strong></div>
+          </div>
+        </div>
+        <div class="d-flex gap-2">
+          <a href="/assign_maintenance" class="btn btn-sm btn-primary">
+            <i class="bi bi-plus-lg me-1"></i> Assign
+          </a>
+          <a href="/maintenance_records" class="btn btn-sm btn-outline-primary">
+            <i class="bi bi-list-task me-1"></i> Logs
+          </a>
+        </div>
+      </div>
+
+      <div class="p-3 mb-3 rounded-3 border bg-light d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+          <div class="p-3 bg-dark text-white rounded-3">
             <i class="bi bi-diagram-3 fs-4"></i>
           </div>
           <div>
@@ -144,7 +262,7 @@
             <div class="small text-muted">Configured lines & substations: <strong>{{ total_grid_sections }} sections</strong></div>
           </div>
         </div>
-        <a href="/manage_grid_sections" class="btn btn-sm btn-primary">
+        <a href="/manage_grid_sections" class="btn btn-sm btn-dark">
           <i class="bi bi-gear-fill me-1"></i> Manage
         </a>
       </div>
@@ -159,7 +277,7 @@
             <div class="small text-muted">Registered in control rooms: <strong>{{ total_operators }} operators</strong></div>
           </div>
         </div>
-        <a href="/view_operators" class="btn btn-sm btn-primary">
+        <a href="/view_operators" class="btn btn-sm btn-info text-white">
           <i class="bi bi-eye me-1"></i> View Details
         </a>
       </div>
