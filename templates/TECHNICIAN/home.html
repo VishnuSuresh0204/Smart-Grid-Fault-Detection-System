@@ -30,12 +30,18 @@
             </div>
           </div>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex flex-wrap gap-2">
+          <a href="/maintenance_records" class="btn btn-primary btn-sm px-3 fw-semibold">
+            <i class="bi bi-clipboard2-check-fill me-1"></i> My Tasks ({{ total_assigned }})
+          </a>
+          <a href="/fault_alert_history" class="btn btn-danger btn-sm px-3 fw-semibold">
+            <i class="bi bi-bell-fill me-1"></i> Fault Alerts
+          </a>
           <a href="/prediction_history" class="btn btn-warning btn-sm text-dark px-3 fw-semibold">
             <i class="bi bi-lightning-charge-fill me-1"></i> AI Fault Predictions
           </a>
           <a href="/technician_profile" class="btn btn-outline-light btn-sm px-3">
-            <i class="bi bi-person-gear me-1"></i> Edit Profile
+            <i class="bi bi-person-gear me-1"></i> Profile
           </a>
         </div>
       </div>
@@ -49,15 +55,15 @@
     <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
       <div class="d-flex justify-content-between align-items-center mb-2">
         <span class="text-secondary small fw-semibold text-uppercase">Assigned Work Orders</span>
-        <span class="badge bg-primary bg-opacity-10 text-primary">3 ACTIVE</span>
+        <span class="badge bg-primary bg-opacity-10 text-primary">TOTAL</span>
       </div>
-      <div class="fs-2 fw-bold text-dark">03</div>
+      <div class="fs-2 fw-bold text-dark">{{ total_assigned }}</div>
       <div class="progress mt-2" style="height: 5px;">
-        <div class="progress-bar bg-primary" style="width: 60%"></div>
+        <div class="progress-bar bg-primary" style="width: 100%"></div>
       </div>
       <div class="d-flex justify-content-between text-muted small mt-2">
-        <span>1 High Priority</span>
-        <span>2 Routine Service</span>
+        <span>Field repair tasks</span>
+        <a href="/maintenance_records" class="text-primary text-decoration-none fw-semibold">All Tasks &rarr;</a>
       </div>
     </div>
   </div>
@@ -65,16 +71,16 @@
   <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="200">
     <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
       <div class="d-flex justify-content-between align-items-center mb-2">
-        <span class="text-secondary small fw-semibold text-uppercase">Substations Serviced</span>
-        <span class="badge bg-success bg-opacity-10 text-success">THIS MONTH</span>
+        <span class="text-secondary small fw-semibold text-uppercase">Pending / Open</span>
+        <span class="badge bg-warning text-dark fw-bold">NEEDS ACTION</span>
       </div>
-      <div class="fs-2 fw-bold text-dark">18</div>
+      <div class="fs-2 fw-bold text-warning">{{ open_tasks }}</div>
       <div class="progress mt-2" style="height: 5px;">
-        <div class="progress-bar bg-success" style="width: 90%"></div>
+        <div class="progress-bar bg-warning" style="width: 100%"></div>
       </div>
       <div class="d-flex justify-content-between text-muted small mt-2">
-        <span>Zero Recurrent Faults</span>
-        <span class="text-success"><i class="bi bi-check-circle"></i> 100% Passed</span>
+        <span>Awaiting inspection</span>
+        <span class="text-warning fw-semibold">Open</span>
       </div>
     </div>
   </div>
@@ -82,16 +88,16 @@
   <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="300">
     <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
       <div class="d-flex justify-content-between align-items-center mb-2">
-        <span class="text-secondary small fw-semibold text-uppercase">Safety Protocol Index</span>
-        <span class="badge bg-warning bg-opacity-10 text-warning">NFPA 70E</span>
+        <span class="text-secondary small fw-semibold text-uppercase">In Progress</span>
+        <span class="badge bg-info bg-opacity-10 text-info">ON FIELD</span>
       </div>
-      <div class="fs-2 fw-bold text-dark">100 <small class="fs-6 text-muted">%</small></div>
+      <div class="fs-2 fw-bold text-info">{{ in_progress_tasks }}</div>
       <div class="progress mt-2" style="height: 5px;">
-        <div class="progress-bar bg-warning" style="width: 100%"></div>
+        <div class="progress-bar bg-info" style="width: 100%"></div>
       </div>
       <div class="d-flex justify-content-between text-muted small mt-2">
-        <span>PPE Checklist Verified</span>
-        <span class="text-success">Zero Incidents</span>
+        <span>Active repair work</span>
+        <span class="text-info fw-semibold">Underway</span>
       </div>
     </div>
   </div>
@@ -99,16 +105,16 @@
   <div class="col-sm-6 col-xl-3" data-aos="fade-up" data-aos-delay="400">
     <div class="card border-0 shadow-sm rounded-4 h-100 p-3 bg-white">
       <div class="d-flex justify-content-between align-items-center mb-2">
-        <span class="text-secondary small fw-semibold text-uppercase">Diagnostic Equipment</span>
-        <span class="badge bg-info bg-opacity-10 text-info">CALIBRATED</span>
+        <span class="text-secondary small fw-semibold text-uppercase">Completed Tasks</span>
+        <span class="badge bg-success bg-opacity-10 text-success">RESOLVED</span>
       </div>
-      <div class="fs-2 fw-bold text-dark">Ready</div>
+      <div class="fs-2 fw-bold text-success">{{ completed_tasks }}</div>
       <div class="progress mt-2" style="height: 5px;">
-        <div class="progress-bar bg-info" style="width: 100%"></div>
+        <div class="progress-bar bg-success" style="width: 100%"></div>
       </div>
       <div class="d-flex justify-content-between text-muted small mt-2">
-        <span>FLIR Thermal &bull; Megger</span>
-        <span class="text-info">Ready for Field</span>
+        <span>Certified & closed</span>
+        <span class="text-success fw-semibold"><i class="bi bi-check-circle"></i> Done</span>
       </div>
     </div>
   </div>
@@ -117,83 +123,166 @@
 <!-- Work Orders & Field Inspection Schedule -->
 <div class="row g-4">
   <div class="col-lg-8" data-aos="fade-right">
-    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100">
-      <div class="d-flex justify-content-between align-items-center mb-3">
+    <!-- Assigned Work Orders -->
+    <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+      <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
         <div>
-          <h5 class="fw-bold text-dark mb-1">Assigned Field Work Orders</h5>
-          <small class="text-muted">Substation repairs, transformer diagnostics, and transmission line patrols</small>
+          <h5 class="fw-bold text-dark mb-1">My Assigned Maintenance Tasks</h5>
+          <small class="text-muted">High-voltage feeder repairs, breaker checks, and transformer diagnostics</small>
         </div>
-        <button class="btn btn-sm btn-outline-success" onclick="alert('Inspection log synchronized with dispatch.')">
-          <i class="bi bi-cloud-arrow-up me-1"></i> Sync Logs
-        </button>
+        <a href="/maintenance_records" class="btn btn-sm btn-outline-primary">
+          <i class="bi bi-eye me-1"></i> View All Records
+        </a>
       </div>
 
-      <div class="table-responsive">
-        <table class="table align-middle table-hover">
-          <thead class="table-light">
-            <tr>
-              <th>Work Order / Target</th>
-              <th>Task Description</th>
-              <th>Substation</th>
-              <th>Priority</th>
-              <th class="text-end">Field Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <div class="fw-bold text-dark">WO-2026-081</div>
-                <small class="text-muted">Type: Infrared Thermography</small>
-              </td>
-              <td>
-                <div class="small fw-semibold">Transformer Bushing Thermal Scan</div>
-                <small class="text-muted">Check hot spot anomalies on 400kV Step-down unit</small>
-              </td>
-              <td><span class="badge bg-secondary">Substation Alpha</span></td>
-              <td><span class="badge bg-danger">HIGH PRIORITY</span></td>
-              <td class="text-end">
-                <button class="btn btn-sm btn-success py-1" onclick="alert('Work Order WO-2026-081 marked in progress.')">
-                  <i class="bi bi-play-circle me-1"></i> Start Task
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="fw-bold text-dark">WO-2026-084</div>
-                <small class="text-muted">Type: Contact Resistance</small>
-              </td>
-              <td>
-                <div class="small fw-semibold">SF6 Circuit Breaker Interrupter Test</div>
-                <small class="text-muted">Verify micro-ohm contact resistance on Feeder 220-C</small>
-              </td>
-              <td><span class="badge bg-secondary">Substation Delta</span></td>
-              <td><span class="badge bg-warning text-dark">MEDIUM</span></td>
-              <td class="text-end">
-                <button class="btn btn-sm btn-outline-success py-1" onclick="alert('Work Order WO-2026-084 selected.')">
-                  <i class="bi bi-check2-square me-1"></i> Inspect
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <div class="fw-bold text-dark">WO-2026-090</div>
-                <small class="text-muted">Type: Insulation Resistance</small>
-              </td>
-              <td>
-                <div class="small fw-semibold">Underground Cable 10kV Megger Test</div>
-                <small class="text-muted">Routine dielectric test on 3-phase cross-linked cable</small>
-              </td>
-              <td><span class="badge bg-secondary">Metro Station S-12</span></td>
-              <td><span class="badge bg-info text-dark">SCHEDULED</span></td>
-              <td class="text-end">
-                <button class="btn btn-sm btn-outline-secondary py-1" onclick="alert('Details for WO-2026-090 loaded.')">
-                  <i class="bi bi-info-circle me-1"></i> View
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      {% if maintenance_records %}
+        <div class="table-responsive">
+          <table class="table align-middle table-hover">
+            <thead class="table-light">
+              <tr>
+                <th>Task ID & Feeder</th>
+                <th>Problem Description</th>
+                <th>Assigned At</th>
+                <th>Status</th>
+                <th class="text-end">Update Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for record in maintenance_records %}
+                <tr>
+                  <td>
+                    <div class="fw-bold text-dark">Task #{{ record.id }}</div>
+                    <div class="small text-muted">
+                      {{ record.prediction.measurement.grid_section.section_name }}
+                      ({{ record.prediction.measurement.grid_section.section_code }})
+                    </div>
+                  </td>
+                  <td>
+                    <div class="small fw-semibold text-dark">{{ record.problem_description|truncatechars:70 }}</div>
+                    <small class="text-muted">
+                      Predicted Fault: <span class="badge bg-light text-dark border">{{ record.prediction.predicted_fault }}</span>
+                    </small>
+                  </td>
+                  <td class="small text-muted">
+                    {{ record.assigned_at|date:"M d, Y" }}
+                  </td>
+                  <td>
+                    {% if record.status == 'Completed' %}
+                      <span class="badge bg-success bg-opacity-10 text-success border border-success">
+                        <i class="bi bi-check-circle-fill me-1"></i> Completed
+                      </span>
+                    {% elif record.status == 'In Progress' %}
+                      <span class="badge bg-info bg-opacity-10 text-info border border-info">
+                        <i class="bi bi-gear-wide-connected me-1"></i> In Progress
+                      </span>
+                    {% else %}
+                      <span class="badge bg-warning bg-opacity-10 text-warning border border-warning text-dark">
+                        <i class="bi bi-hourglass-split me-1"></i> Open
+                      </span>
+                    {% endif %}
+                  </td>
+                  <td class="text-end">
+                    <button class="btn btn-sm btn-outline-primary py-1" data-bs-toggle="modal" data-bs-target="#updateModal{{ record.id }}">
+                      <i class="bi bi-pencil-square me-1"></i> Update
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Update Modal for this Record -->
+                <div class="modal fade" id="updateModal{{ record.id }}" tabindex="-1" aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content rounded-4 border-0 shadow">
+                      <div class="modal-header border-bottom">
+                        <h6 class="modal-title fw-bold text-dark">Update Maintenance Task #{{ record.id }}</h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                      </div>
+                      <form method="POST" action="/update_maintenance_status/{{ record.id }}">
+                        {% csrf_token %}
+                        <div class="modal-body p-4">
+                          <div class="p-3 rounded-3 bg-light border mb-3 small">
+                            <div class="text-muted">Grid Feeder:</div>
+                            <div class="fw-bold text-dark">{{ record.prediction.measurement.grid_section.section_name }}</div>
+                            <div class="text-muted mt-2">Problem Description:</div>
+                            <div class="text-dark">{{ record.problem_description }}</div>
+                          </div>
+
+                          <div class="mb-3">
+                            <label class="form-label small fw-semibold text-dark">Task Status <span class="text-danger">*</span></label>
+                            <select name="status" class="form-select" required>
+                              <option value="Open" {% if record.status == 'Open' %}selected{% endif %}>Open</option>
+                              <option value="In Progress" {% if record.status == 'In Progress' %}selected{% endif %}>In Progress</option>
+                              <option value="Completed" {% if record.status == 'Completed' %}selected{% endif %}>Completed</option>
+                            </select>
+                          </div>
+
+                          <div class="mb-2">
+                            <label class="form-label small fw-semibold text-dark">Action Taken / Resolution Report</label>
+                            <textarea name="action_taken" rows="3" class="form-control" placeholder="Specify inspection results, replaced insulators, breaker timing checks, or megger readings...">{{ record.action_taken }}</textarea>
+                            <small class="text-muted">Required when marking status as Completed.</small>
+                          </div>
+                        </div>
+                        <div class="modal-footer border-top bg-light">
+                          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                          <button type="submit" class="btn btn-primary btn-sm px-3 fw-semibold">Save Status Update</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="text-center py-5">
+          <div class="p-3 bg-light rounded-circle d-inline-flex mb-2">
+            <i class="bi bi-clipboard-check text-success fs-2"></i>
+          </div>
+          <h6 class="fw-bold text-dark">No Maintenance Tasks Assigned</h6>
+          <p class="text-muted small mb-0">You currently have no open repair tickets assigned by the administrator.</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Recent Alerts for Field Response -->
+    {% if recent_alerts %}
+      <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold text-dark mb-0">High-Priority Relay Alerts</h5>
+          <a href="/fault_alert_history" class="btn btn-sm btn-outline-danger">
+            <i class="bi bi-bell-fill me-1"></i> All Alerts
+          </a>
+        </div>
+        <div class="list-group list-group-flush">
+          {% for alert in recent_alerts %}
+            <div class="list-group-item px-0 py-3 border-bottom">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="badge {% if alert.status == 'New' %}bg-danger{% elif alert.status == 'Acknowledged' %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                  {{ alert.status }}
+                </span>
+                <small class="text-muted">{{ alert.created_at|date:"M d, H:i" }}</small>
+              </div>
+              <h6 class="fw-bold text-dark mb-1">{{ alert.title }}</h6>
+              <p class="text-muted small mb-1">{{ alert.message|truncatewords:20 }}</p>
+              <div class="d-flex justify-content-between align-items-center mt-2">
+                <span class="small text-secondary">
+                  <i class="bi bi-geo-alt me-1"></i>{{ alert.prediction.measurement.grid_section.section_name }}
+                </span>
+                {% if alert.status != 'Resolved' and alert.status != 'Acknowledged' %}
+                  <form method="POST" action="/acknowledge_fault_alert/{{ alert.id }}" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-sm btn-outline-warning py-0 px-2 small">
+                      <i class="bi bi-check2"></i> Acknowledge
+                    </button>
+                  </form>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
       </div>
+    {% endif %}
+  </div>
 
       <div class="p-3 rounded-3 bg-light border mt-3">
         <div class="d-flex justify-content-between align-items-center">
